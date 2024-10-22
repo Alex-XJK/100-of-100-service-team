@@ -101,6 +101,9 @@ To run the application, please use:
 mvn spring-boot:run
 ```
 
+### Running a Cloud based Instance
+The project is deployed on Google Cloud's App Engine at the following URL: https://coms-4156-team-project.ue.r.appspot.com.
+
 ## [Developer] Development Notice
 
 ### Service Design
