@@ -128,11 +128,56 @@ public class HrDatabaseFacade {
    * @param department the updated department object
    * @return true if the department is updated successfully, false otherwise
    */
-  public boolean updateDepartment(Department department) {
-    // TODO: Expected in release v1.1.0!!!
-    // TODO: Update the department information into the database
-    return true;
+//  public boolean updateDepartment(Department department) {
+//    // TODO: Expected in release v1.1.0!!!
+//    // TODO: Update the department information into the database
+//    return true;
+//  }
+
+  /**
+   * Adds an employee to the organization's employee list.
+   *
+   * @param employee the employee to add
+   */
+  public void addEmployeeToOrganization(Employee employee) {
+    this.employees.add(employee);
   }
+
+  /**
+   * Adds an employee to the database.
+   *
+   * @param employee the employee to add
+   * @return true if the employee is added successfully, false otherwise
+   */
+  public boolean addEmployeeToDatabase(Employee employee) {
+    return dbConnection.addEmployee(this.organizationId, employee);
+  }
+
+  /**
+   * Updates the department information in the database.
+   *
+   * @param department the updated department object
+   * @return true if the department is updated successfully, false otherwise
+   */
+  public boolean updateDepartment(Department department) {
+    boolean success = dbConnection.updateDepartment(this.organizationId, department);
+    if (success) {
+      // Update the in-memory cache
+      departments.removeIf(d -> d.getId() == department.getId());
+      departments.add(department);
+    }
+    return success;
+  }
+
+  /**
+   * Generates a new external employee ID for the organization.
+   *
+   * @return a new unique external employee ID
+   */
+  public int generateNewEmployeeId() {
+    return dbConnection.generateNewEmployeeId(this.organizationId);
+  }
+
 
   //  /**
   //   * Updates the organization information.

@@ -12,6 +12,7 @@ public class Employee implements OrganizationComponent {
   private final int id;
   private final String name;
   private final Date hireDate;
+  private Integer departmentId;
 
   /**
    * Constructs an employee with the given ID, name, and hire date.
@@ -30,13 +31,22 @@ public class Employee implements OrganizationComponent {
     }
   }
 
+  // Getter and Setter for departmentId
+  public Integer getDepartmentId() {
+    return departmentId;
+  }
+
+  public void setDepartmentId(Integer departmentId) {
+    this.departmentId = departmentId;
+  }
+
   /**
    * Returns the ID of the employee.
    *
    * @return the ID of the employee (external ID)
    */
   @Override
-  public long getId() {
+  public int getId() {
     return this.id;
   }
 

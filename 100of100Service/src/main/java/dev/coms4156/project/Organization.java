@@ -17,7 +17,7 @@ public class Organization extends OrganizationComposite {
    * @param id the ID of the organization
    * @param name the name of the organization
    */
-  public Organization(long id, String name) {
+  public Organization(int id, String name) {
     super(id, name);
     this.typeName = "Organization";
     this.employees = new ArrayList<>();

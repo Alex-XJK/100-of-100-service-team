@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * A command to add an employee to given department.
+ * A command to add an employee to a given department.
  */
 public class AddEmployeeToDeptCommand implements Command {
   private final int clientId;
@@ -42,7 +42,7 @@ public class AddEmployeeToDeptCommand implements Command {
       throw new NotFoundException("Department [" + this.departmentId + "] not found");
     }
 
-    // we parse the hireDate string into a Date object
+    // Parse the hireDate string into a Date object
     Date parsedHireDate;
     try {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -51,12 +51,25 @@ public class AddEmployeeToDeptCommand implements Command {
       throw new IllegalArgumentException("Invalid date format. Expected yyyy-MM-dd.", e);
     }
 
-    // Create the new employee
-    Employee newEmployee = new Employee(department.getEmployees().size() + 1, name, parsedHireDate);
+    // Generate a new external employee ID (e.g., max existing ID + 1)
+    int newEmployeeId = dbFacade.generateNewEmployeeId();
 
-    // Add the employee to the department and sync with the database
+    // Create the new employee
+    Employee newEmployee = new Employee(newEmployeeId, name, parsedHireDate);
+
+    // Add the employee to the department
     department.addEmployee(newEmployee);
-    dbFacade.updateDepartment(department); // Sync with database
+
+    // Add the employee to the organization's employee list
+    dbFacade.addEmployeeToOrganization(newEmployee);
+
+    // Sync changes with the database
+    boolean success = dbFacade.updateDepartment(department);
+    success = success && dbFacade.addEmployeeToDatabase(newEmployee);
+
+    if (!success) {
+      throw new IllegalStateException("Failed to add employee to the database.");
+    }
 
     return "Employee added to department: " + department.getName();
   }
