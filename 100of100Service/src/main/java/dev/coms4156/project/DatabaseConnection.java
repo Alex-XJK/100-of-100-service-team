@@ -71,7 +71,7 @@ public class DatabaseConnection {
       pstmt.setInt(2, internalDepartmentId);
       ResultSet rs = pstmt.executeQuery();
       if (rs.next()) {
-        List<Employee> employees = getEmployeesForDepartment(internalDepartmentId);
+        List<Employee> employees = getEmployeesForDepartment(internalDepartmentId, organizationId);
         return new Department(
                 externalDepartmentId,
                 rs.getString("name"),
@@ -127,12 +127,22 @@ public class DatabaseConnection {
       while (rs.next()) {
         int internalId = rs.getInt("department_id");
         int externalId = internalId % 10000;
-        List<Employee> employees = getEmployeesForDepartment(internalId);
+        List<Employee> employees = getEmployeesForDepartment(internalId, organizationId);
         Department department = new Department(
                 externalId,
                 rs.getString("name"),
                 employees
         );
+
+        // Get and set head if exists
+        Integer headEmployeeId = rs.getInt("head_employee_id");
+        if (!rs.wasNull()) {
+          Employee head = getEmployee(organizationId, headEmployeeId % 10000);
+          if (head != null) {
+            department.setHead(head);
+          }
+        }
+
         departments.add(department);
       }
     } catch (SQLException e) {
@@ -168,14 +178,16 @@ public class DatabaseConnection {
    * Returns a list of employees in a given department.
    *
    * @param internalDepartmentId the internal department id
+   * @param organizationId the organization id
    * @return a list of employees in the department
    */
-  private List<Employee> getEmployeesForDepartment(int internalDepartmentId) {
+  private List<Employee> getEmployeesForDepartment(int internalDepartmentId, int organizationId) {
     List<Employee> employees = new ArrayList<>();
-    String query = "SELECT * FROM employees WHERE department_id = ?";
+    String query = "SELECT * FROM employees WHERE department_id = ? AND organization_id = ?";
 
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, internalDepartmentId);
+      pstmt.setInt(2, organizationId);
       ResultSet rs = pstmt.executeQuery();
 
       while (rs.next()) {
@@ -193,6 +205,161 @@ public class DatabaseConnection {
     }
 
     return employees;
+  }
+
+  /**
+   * Adds a new employee to a department in the database.
+   *
+   * @param organizationId the organization id
+   * @param departmentId the internal department id
+   * @param employee the employee to add
+   * @return the internal employee ID if successful, -1 if failed
+   */
+  public int addEmployeeToDepartment(int organizationId, int departmentId, Employee employee) {
+    // First get the next available employee ID for this organization
+    String maxIdQuery = "SELECT MAX(employee_id) as max_id FROM employees WHERE organization_id = ?";
+    int newEmployeeId;
+
+    try (PreparedStatement pstmt = connection.prepareStatement(maxIdQuery)) {
+      pstmt.setInt(1, organizationId);
+      ResultSet rs = pstmt.executeQuery();
+      if (rs.next()) {
+        int maxId = rs.getInt("max_id");
+        if (rs.wasNull()) {
+          newEmployeeId = organizationId * 10000 + 1;
+        } else {
+          newEmployeeId = maxId + 1;
+        }
+      } else {
+        newEmployeeId = organizationId * 10000 + 1;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return -1;
+    }
+
+    // Insert the new employee
+    String insertEmployeeQuery =
+            "INSERT INTO employees (employee_id, organization_id, department_id, name, hire_date, position, salary) " +
+                    "VALUES (?, ?, ?, ?, ?, 'New Employee', 50000.00)";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(insertEmployeeQuery)) {
+      pstmt.setInt(1, newEmployeeId);
+      pstmt.setInt(2, organizationId);
+      pstmt.setInt(3, departmentId);
+      pstmt.setString(4, employee.getName());
+      pstmt.setDate(5, new java.sql.Date(employee.getHireDate().getTime()));
+
+      int rowsAffected = pstmt.executeUpdate();
+      if (rowsAffected > 0) {
+        return newEmployeeId;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return -1;
+  }
+
+  /**
+   * Removes an employee from a department in the database.
+   *
+   * @param organizationId the organization id
+   * @param departmentId the internal department id
+   * @param employeeId the internal employee id
+   * @return true if removal successful, false otherwise
+   */
+  public boolean removeEmployeeFromDepartment(int organizationId, int departmentId, int employeeId) {
+    String checkHeadQuery =
+            "SELECT head_employee_id FROM departments WHERE department_id = ? AND organization_id = ?";
+
+    try (PreparedStatement checkStmt = connection.prepareStatement(checkHeadQuery)) {
+      checkStmt.setInt(1, departmentId);
+      checkStmt.setInt(2, organizationId);
+
+      ResultSet rs = checkStmt.executeQuery();
+      if (rs.next() && rs.getInt("head_employee_id") == employeeId) {
+        String updateHeadQuery =
+                "UPDATE departments SET head_employee_id = NULL " +
+                        "WHERE department_id = ? AND organization_id = ?";
+        try (PreparedStatement updateStmt = connection.prepareStatement(updateHeadQuery)) {
+          updateStmt.setInt(1, departmentId);
+          updateStmt.setInt(2, organizationId);
+          updateStmt.executeUpdate();
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+
+    String deleteQuery =
+            "DELETE FROM employees " +
+                    "WHERE employee_id = ? AND department_id = ? AND organization_id = ?";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
+      pstmt.setInt(1, employeeId);
+      pstmt.setInt(2, departmentId);
+      pstmt.setInt(3, organizationId);
+
+      int rowsAffected = pstmt.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  /**
+   * Updates a department's information in the database.
+   * This method handles all department updates including setting department head.
+   *
+   * @param organizationId the organization id
+   * @param department the department to update
+   * @return true if update successful, false otherwise
+   */
+  public boolean updateDepartment(int organizationId, Department department) {
+    long internalDepartmentId = organizationId * 10000 + department.getId();
+    Employee head = department.getHead();
+    long headEmployeeId = head != null ? (organizationId * 10000 + head.getId()) : 0;
+
+    if (head != null) {
+      String verifyQuery =
+              "SELECT 1 FROM employees " +
+                      "WHERE employee_id = ? AND organization_id = ? AND department_id = ?";
+
+      try (PreparedStatement verifyStmt = connection.prepareStatement(verifyQuery)) {
+        verifyStmt.setLong(1, headEmployeeId);
+        verifyStmt.setLong(2, organizationId);
+        verifyStmt.setLong(3, internalDepartmentId);
+
+        if (!verifyStmt.executeQuery().next()) {
+          return false;
+        }
+      } catch (SQLException e) {
+        e.printStackTrace();
+        return false;
+      }
+    }
+
+    String query = "UPDATE departments SET name = ?, head_employee_id = ? " +
+            "WHERE organization_id = ? AND department_id = ?";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+      pstmt.setString(1, department.getName());
+      if (head != null) {
+        pstmt.setLong(2, headEmployeeId);
+      } else {
+        pstmt.setNull(2, java.sql.Types.INTEGER);
+      }
+      pstmt.setLong(3, organizationId);
+      pstmt.setLong(4, internalDepartmentId);
+
+      int rowsAffected = pstmt.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
   }
 
   /**

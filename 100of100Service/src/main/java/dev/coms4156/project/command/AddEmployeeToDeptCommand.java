@@ -3,6 +3,7 @@ package dev.coms4156.project.command;
 import dev.coms4156.project.Department;
 import dev.coms4156.project.Employee;
 import dev.coms4156.project.HrDatabaseFacade;
+import dev.coms4156.project.exception.BadRequestException;
 import dev.coms4156.project.exception.NotFoundException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,13 +52,12 @@ public class AddEmployeeToDeptCommand implements Command {
       throw new IllegalArgumentException("Invalid date format. Expected yyyy-MM-dd.", e);
     }
 
-    // Create the new employee
-    Employee newEmployee = new Employee(department.getEmployees().size() + 1, name, parsedHireDate);
+    Employee tempEmployee = new Employee(-1, name, parsedHireDate);
+    Employee newEmployee = dbFacade.addEmployeeToDepartment(departmentId, tempEmployee);
+    if (newEmployee == null) {
+      throw new BadRequestException("Failed to add employee to department");
+    }
 
-    // Add the employee to the department and sync with the database
-    department.addEmployee(newEmployee);
-    dbFacade.updateDepartment(department); // Sync with database
-
-    return "Employee added to department: " + department.getName();
+    return "Employee [" + newEmployee.getId() + "] added to department: " + department.getName();
   }
 }

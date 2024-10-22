@@ -56,7 +56,8 @@ INSERT INTO departments (department_id, organization_id, name) VALUES
 -- Employees for clientId = 1
 INSERT INTO employees (employee_id, organization_id, department_id, name, position, hire_date, salary, contact_info) VALUES
 (10001, 1, 10001, 'John Doe', 'Software Engineer', '2020-01-15', 75000.00, '{"email": "john.doe@acme.com", "phone": "123-456-7890"}'),
-(10002, 1, 10002, 'Jane Smith', 'Marketing Manager', '2019-05-01', 80000.00, '{"email": "jane.smith@acme.com", "phone": "098-765-4321"}');
+(10002, 1, 10002, 'Jane Smith', 'Marketing Manager', '2019-05-01', 80000.00, '{"email": "jane.smith@acme.com", "phone": "098-765-4321"}'),
+(10003, 1, 10001, 'Tom Brown', 'Software Engineer', '2021-03-20', 70000.00, '{"email": "good@test.email", "phone": "123-456-7890"}');
 
 -- Employees for clientId = 2
 INSERT INTO employees (employee_id, organization_id, department_id, name, position, hire_date, salary, contact_info) VALUES

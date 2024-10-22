@@ -3,6 +3,7 @@ package dev.coms4156.project.command;
 import dev.coms4156.project.Department;
 import dev.coms4156.project.Employee;
 import dev.coms4156.project.HrDatabaseFacade;
+import dev.coms4156.project.exception.BadRequestException;
 import dev.coms4156.project.exception.NotFoundException;
 
 /**
@@ -45,8 +46,12 @@ public class RemoveEmployeeFromDeptCommand implements Command {
 
     // Remove the employee and update the department
     department.removeEmployee(employeeToRemove);
-    dbFacade.updateDepartment(department);  // Sync with the database
-
+    // Remove employee through facade
+    boolean removed = dbFacade.removeEmployeeFromDepartment(departmentId, employeeId);
+    if (!removed) {
+      throw new BadRequestException("Failed to remove employee [" + employeeId +
+              "] from department [" + departmentId + "]");
+    }
     return "Employee removed from department: " + department.getName();
   }
 }

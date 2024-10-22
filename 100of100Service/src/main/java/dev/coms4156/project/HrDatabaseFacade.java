@@ -129,9 +129,12 @@ public class HrDatabaseFacade {
    * @return true if the department is updated successfully, false otherwise
    */
   public boolean updateDepartment(Department department) {
-    // TODO: Expected in release v1.1.0!!!
-    // TODO: Update the department information into the database
-    return true;
+    boolean success = dbConnection.updateDepartment(this.organizationId, department);
+    if (success) {
+      List<Department> updatedDepartments = dbConnection.getDepartments(this.organizationId);
+      this.departments = updatedDepartments;
+    }
+    return success;
   }
 
   //  /**
@@ -145,16 +148,34 @@ public class HrDatabaseFacade {
   //    return true;
   //  }
 
-  //  /**
-  //   * Inserts a new employee into the database.
-  //   *
-  //   * @param employee the partially filled employee object
-  //   * @return the real employee object with the ID assigned
-  //   */
-  //  public Employee insertEmployee(Employee employee) {
-  //    // TODO: Insert the employee information into the database
-  //    return employee;
-  //  }
+  /**
+   * Adds a new employee to a department.
+   *
+   * @param departmentId the department ID
+   * @param employee the employee to add
+   * @return the added employee with assigned ID, or null if failed
+   */
+  public Employee addEmployeeToDepartment(int departmentId, Employee employee) {
+    int internalDeptId = this.organizationId * 10000 + departmentId;
+    int internalEmpId = dbConnection.addEmployeeToDepartment(this.organizationId, internalDeptId, employee);
+
+    if (internalEmpId != -1) {
+      int externalEmpId = internalEmpId % 10000;
+
+      Employee newEmployee = new Employee(
+              externalEmpId,
+              employee.getName(),
+              employee.getHireDate()
+      );
+
+      // Update the in-memory cache
+      this.employees = dbConnection.getEmployees(this.organizationId);
+      this.departments = dbConnection.getDepartments(this.organizationId);
+
+      return newEmployee;
+    }
+    return null;
+  }
 
   //  /**
   //   * Inserts a new department into the database.
@@ -167,16 +188,31 @@ public class HrDatabaseFacade {
   //    return department;
   //  }
 
-  //  /**
-  //   * Removes an employee from the database.
-  //   *
-  //   * @param employeeId the employee ID
-  //   * @return true if the employee is removed successfully, false otherwise
-  //   */
-  //  public boolean removeEmployee(int employeeId) {
-  //    // TODO: Remove the employee information from the database
-  //    return true;
-  //  }
+  /**
+   * Removes an employee from a department.
+   *
+   * @param departmentId the department ID
+   * @param employeeId the employee ID
+   * @return true if the employee is removed successfully, false otherwise
+   */
+  public boolean removeEmployeeFromDepartment(int departmentId, int employeeId) {
+    int internalDeptId = this.organizationId * 10000 + departmentId;
+    int internalEmpId = this.organizationId * 10000 + employeeId;
+
+    boolean success = dbConnection.removeEmployeeFromDepartment(
+            this.organizationId,
+            internalDeptId,
+            internalEmpId
+    );
+
+    if (success) {
+      // Update the in-memory cache
+      this.employees = dbConnection.getEmployees(this.organizationId);
+      this.departments = dbConnection.getDepartments(this.organizationId);
+    }
+
+    return success;
+  }
 
   //  /**
   //   * Removes a department from the database.
