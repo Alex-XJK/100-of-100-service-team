@@ -13,7 +13,7 @@ public interface OrganizationComponent {
    *
    * @return the ID of the organization component
    */
-  long getId();
+  int getId();
 
   /**
    * Returns the name of the organization component.
