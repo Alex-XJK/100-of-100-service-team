@@ -55,7 +55,7 @@ public class AddEmployeeToDeptCommand implements Command {
     int newEmployeeId = dbFacade.generateNewEmployeeId();
 
     // Create the new employee
-    Employee newEmployee = new Employee(newEmployeeId, name, parsedHireDate);
+    Employee newEmployee = new Employee(newEmployeeId, name, parsedHireDate, departmentId);
 
     // Add the employee to the department
     department.addEmployee(newEmployee);

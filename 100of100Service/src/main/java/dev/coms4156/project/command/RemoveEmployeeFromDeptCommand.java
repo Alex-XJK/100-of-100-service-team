@@ -47,6 +47,7 @@ public class RemoveEmployeeFromDeptCommand implements Command {
     department.removeEmployee(employeeToRemove);
     dbFacade.updateDepartment(department);  // Sync with the database
 
-    return "Employee removed from department: " + department.getName();
+    return "Employee " + employeeToRemove.getName() + "(ID = " +
+            employeeId + ")" + " removed from department: " + department.getName();
   }
 }
