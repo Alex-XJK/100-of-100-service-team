@@ -123,18 +123,6 @@ public class HrDatabaseFacade {
   //  }
 
   /**
-   * Updates the department information.
-   *
-   * @param department the updated department object
-   * @return true if the department is updated successfully, false otherwise
-   */
-//  public boolean updateDepartment(Department department) {
-//    // TODO: Expected in release v1.1.0!!!
-//    // TODO: Update the department information into the database
-//    return true;
-//  }
-
-  /**
    * Adds an employee to the organization's employee list.
    *
    * @param employee the employee to add

@@ -71,6 +71,6 @@ public class AddEmployeeToDeptCommand implements Command {
       throw new IllegalStateException("Failed to add employee to the database.");
     }
 
-    return "Employee added to department: " + department.getName();
+    return "Employee " + name + " added to department: " + department.getName();
   }
 }

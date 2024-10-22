@@ -67,5 +67,5 @@
 # UPDATE departments SET head_employee_id = 10002 WHERE department_id = 10002;
 # UPDATE departments SET head_employee_id = 20001 WHERE department_id = 20001;
 # UPDATE departments SET head_employee_id = 20002 WHERE department_id = 20002;
-
+#
 SELECT * FROM employees WHERE organization_id = 1;

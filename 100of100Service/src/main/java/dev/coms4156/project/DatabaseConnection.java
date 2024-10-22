@@ -210,7 +210,8 @@ public class DatabaseConnection {
       internalDepartmentId = organizationId * 10000 + employee.getDepartmentId();
     }
 
-    String query = "INSERT INTO employees (employee_id, organization_id, department_id, name, hire_date) "
+    String query = "INSERT INTO employees "
+            + "(employee_id, organization_id, department_id, name, hire_date) "
             + "VALUES (?, ?, ?, ?, ?)";
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, internalEmployeeId);
@@ -249,7 +250,8 @@ public class DatabaseConnection {
 
     try {
       // Update department details
-      String updateDeptQuery = "UPDATE departments SET name = ? WHERE organization_id = ? AND department_id = ?";
+      String updateDeptQuery = "UPDATE departments SET name = ? WHERE organization_id = ? "
+              + "AND department_id = ?";
       try (PreparedStatement pstmt = connection.prepareStatement(updateDeptQuery)) {
         pstmt.setString(1, department.getName());
         pstmt.setInt(2, organizationId);
@@ -258,7 +260,8 @@ public class DatabaseConnection {
       }
 
       // Clear existing employees from the department
-      String clearEmployeesQuery = "UPDATE employees SET department_id = NULL WHERE department_id = ?";
+      String clearEmployeesQuery = "UPDATE employees SET department_id = NULL "
+              + "WHERE department_id = ?";
       try (PreparedStatement pstmt = connection.prepareStatement(clearEmployeesQuery)) {
         pstmt.setInt(1, internalDepartmentId);
         pstmt.executeUpdate();
