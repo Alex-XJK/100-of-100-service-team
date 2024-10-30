@@ -164,7 +164,7 @@ public class DatabaseConnection {
       ResultSet rs = pstmt.executeQuery();
       if (rs.next()) {
         return new Organization(
-                rs.getLong("organization_id"),
+                rs.getInt("organization_id"),
                 rs.getString("name")
         );
       }
@@ -325,9 +325,9 @@ public class DatabaseConnection {
    * @return true if update successful, false otherwise
    */
   public boolean updateDepartment(int organizationId, Department department) {
-    long internalDepartmentId = organizationId * 10000 + department.getId();
+    int internalDepartmentId = organizationId * 10000 + department.getId();
     Employee head = department.getHead();
-    long headEmployeeId = head != null ? (organizationId * 10000 + head.getId()) : 0;
+    int headEmployeeId = head != null ? (organizationId * 10000 + head.getId()) : 0;
 
     if (head != null) {
       String verifyQuery =
@@ -335,9 +335,9 @@ public class DatabaseConnection {
                       + "WHERE employee_id = ? AND organization_id = ? AND department_id = ?";
 
       try (PreparedStatement verifyStmt = connection.prepareStatement(verifyQuery)) {
-        verifyStmt.setLong(1, headEmployeeId);
-        verifyStmt.setLong(2, organizationId);
-        verifyStmt.setLong(3, internalDepartmentId);
+        verifyStmt.setInt(1, headEmployeeId);
+        verifyStmt.setInt(2, organizationId);
+        verifyStmt.setInt(3, internalDepartmentId);
 
         if (!verifyStmt.executeQuery().next()) {
           return false;
@@ -354,12 +354,12 @@ public class DatabaseConnection {
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setString(1, department.getName());
       if (head != null) {
-        pstmt.setLong(2, headEmployeeId);
+        pstmt.setInt(2, headEmployeeId);
       } else {
         pstmt.setNull(2, java.sql.Types.INTEGER);
       }
-      pstmt.setLong(3, organizationId);
-      pstmt.setLong(4, internalDepartmentId);
+      pstmt.setInt(3, organizationId);
+      pstmt.setInt(4, internalDepartmentId);
 
       int rowsAffected = pstmt.executeUpdate();
       return rowsAffected > 0;

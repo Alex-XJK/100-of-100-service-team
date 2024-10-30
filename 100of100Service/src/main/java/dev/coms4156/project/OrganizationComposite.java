@@ -8,7 +8,7 @@ import java.util.List;
  * Just an abstract class that implements the OrganizationComponent interface.
  */
 public abstract class OrganizationComposite implements OrganizationComponent {
-  protected final long id;
+  protected final int id;
   protected final String name;
   protected final List<OrganizationComponent> children;
   protected String typeName;
@@ -19,7 +19,7 @@ public abstract class OrganizationComposite implements OrganizationComponent {
    * @param id the ID of the organization composite
    * @param name the name of the organization composite
    */
-  public OrganizationComposite(long id, String name) {
+  public OrganizationComposite(int id, String name) {
     this.id = id;
     this.name = name;
     this.children = new ArrayList<>();
@@ -27,7 +27,7 @@ public abstract class OrganizationComposite implements OrganizationComponent {
   }
 
   @Override
-  public long getId() {
+  public int getId() {
     return this.id;
   }
 

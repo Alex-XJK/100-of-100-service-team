@@ -28,6 +28,129 @@ public class DatabaseConnectionStub extends DatabaseConnection {
   }
 
   /**
+   * Resets the test data to its initial state.
+   * This method should be called before each test to ensure a clean state.
+   */
+  public void resetTestData() {
+    testEmployees.clear();
+    testDepartments.clear();
+    testOrganizations.clear();
+    initializeTestData();
+  }
+
+  @Override
+  public boolean updateDepartment(int organizationId, Department department) {
+    List<Department> departments = testDepartments.get(organizationId);
+    if (departments == null) {
+      return false;
+    }
+
+    if (department.getHead() != null) {
+      Employee head = getEmployee(organizationId, department.getHead().getId());
+      if (head == null) {
+        return false;
+      }
+    }
+
+    for (int i = 0; i < departments.size(); i++) {
+      if (departments.get(i).getId() == department.getId()) {
+        departments.set(i, department);
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public int addEmployeeToDepartment(int organizationId, int departmentId, Employee employee) {
+    List<Employee> employees = testEmployees.get(organizationId);
+    List<Department> departments = testDepartments.get(organizationId);
+
+    if (employees == null || departments == null) {
+      return -1;
+    }
+
+    Department targetDept = null;
+    for (Department dept : departments) {
+      if (dept.getId() == (departmentId % 10000)) {
+        targetDept = dept;
+        break;
+      }
+    }
+
+    if (targetDept == null) {
+      return -1;
+    }
+
+    int maxId = 0;
+    for (Employee emp : employees) {
+
+      if (emp.getId() > maxId) {
+        maxId = emp.getId();
+      }
+    }
+    int newEmployeeId = maxId + 1;
+
+    Employee newEmployee = new Employee(newEmployeeId, employee.getName(), employee.getHireDate());
+    employees.add(newEmployee);
+    targetDept.addEmployee(newEmployee);
+
+    return organizationId * 10000 + newEmployeeId;
+  }
+
+  @Override
+  public boolean removeEmployeeFromDepartment(int organizationId, int departmentId, int employeeId) {
+    List<Department> departments = testDepartments.get(organizationId);
+    if (departments == null) {
+      return false;
+    }
+
+    int externalDepartmentId = departmentId % 10000;
+    int externalEmployeeId = employeeId % 10000;
+
+    Department targetDept = null;
+    for (Department dept : departments) {
+      if (dept.getId() == externalDepartmentId) {
+        targetDept = dept;
+        break;
+      }
+    }
+
+    if (targetDept == null) {
+      return false;
+    }
+
+    Employee targetEmployee = null;
+    List<Employee> employees = testEmployees.get(organizationId);
+    if (employees != null) {
+      for (Employee emp : employees) {
+        if (emp.getId() == externalEmployeeId) {
+          targetEmployee = emp;
+          break;
+        }
+      }
+    }
+
+    if (targetEmployee == null) {
+      return false;
+    }
+
+    if (targetDept.getHead() != null && targetDept.getHead().getId() == targetEmployee.getId()) {
+      targetDept.setHead(null);
+    }
+
+    boolean employeeRemoved = employees.remove(targetEmployee);
+
+    boolean deptRemoved = false;
+    List<Employee> deptEmployees = targetDept.getEmployees();
+    if (deptEmployees != null) {
+      deptRemoved = deptEmployees.remove(targetEmployee);
+    }
+
+    return employeeRemoved && deptRemoved;
+  }
+
+  /**
    * Retrieves an employee for a given organization by external employee ID.
    *
    * @param organizationId the organization ID (client ID)
@@ -119,8 +242,8 @@ public class DatabaseConnectionStub extends DatabaseConnection {
     organization1.addDepartment(marketing1);
 
     // Store data for Client 1
-    testEmployees.put(clientId1, Arrays.asList(johnDoe, janeSmith));
-    testDepartments.put(clientId1, Arrays.asList(engineering1, marketing1));
+    testEmployees.put(clientId1, new ArrayList<>(List.of(johnDoe, janeSmith)));
+    testDepartments.put(clientId1, new ArrayList<>(List.of(engineering1, marketing1)));
     testOrganizations.put(clientId1, organization1);
 
     // Client 2 Data
@@ -144,8 +267,8 @@ public class DatabaseConnectionStub extends DatabaseConnection {
     organization2.addDepartment(marketing2);
 
     // Store data for Client 2
-    testEmployees.put(clientId2, Arrays.asList(aliceJohnson, bobBrown));
-    testDepartments.put(clientId2, Arrays.asList(engineering2, marketing2));
+    testEmployees.put(clientId2, new ArrayList<>(List.of(aliceJohnson, bobBrown)));
+    testDepartments.put(clientId2, new ArrayList<>(List.of(engineering2, marketing2)));
     testOrganizations.put(clientId2, organization2);
   }
 

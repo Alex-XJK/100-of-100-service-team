@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import dev.coms4156.project.stubs.DatabaseConnectionStub;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -31,14 +32,21 @@ public class RouteControllerTest {
   private static final String CLIENT_ID_2 = "Mg";
   private static final String CLIENT_ID_99 = "OTk";
 
+  private static DatabaseConnectionStub dbConnectionStub;
+
   /**
    * Set up the test environment.
    * Set the database connection to the stub, and flag the TestMode.
    */
   @BeforeAll
   public static void setUp() {
-    DatabaseConnection dbConnectionStub = DatabaseConnectionStub.getInstance();
+    dbConnectionStub = (DatabaseConnectionStub) DatabaseConnectionStub.getInstance();
     HrDatabaseFacade.setTestMode(dbConnectionStub);
+  }
+
+  @BeforeEach
+  public void resetDatabase() {
+    dbConnectionStub.resetTestData();
   }
 
   @Test

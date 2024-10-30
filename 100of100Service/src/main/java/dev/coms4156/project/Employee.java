@@ -36,7 +36,7 @@ public class Employee implements OrganizationComponent {
    * @return the ID of the employee (external ID)
    */
   @Override
-  public long getId() {
+  public int getId() {
     return this.id;
   }
 
