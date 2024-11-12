@@ -1,9 +1,10 @@
 package dev.coms4156.project.interceptor;
 
 import dev.coms4156.project.exception.BadRequestException;
+import dev.coms4156.project.exception.ForbiddenException;
+import dev.coms4156.project.utils.CodecUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,39 +29,22 @@ public class ParameterDecodingInterceptor implements HandlerInterceptor {
       Object handler
   ) {
     String originalCid = request.getParameter(CLIENT_ID);
-
-    if (originalCid != null) {
-      String decodedCid = decode(originalCid);
-      request.setAttribute(CLIENT_ID, decodedCid);
-      logger.info("Decode client id from [{}] to [{}].", originalCid, decodedCid);
+    if (originalCid == null) {
+      logger.warn("Client ID is required.");
+      throw new ForbiddenException("Client ID is required.");
     }
+
+    String decodedCid;
+    try {
+      decodedCid = CodecUtils.decode(originalCid);
+    } catch (IllegalArgumentException e) {
+      logger.warn("Failed to decode [{}].", originalCid);
+      throw new BadRequestException("Invalid client ID [" + originalCid + "]");
+    }
+    request.setAttribute(CLIENT_ID, decodedCid);
+    logger.info("Decode client id from [{}] to [{}].", originalCid, decodedCid);
 
     return true;
-  }
-
-  /**
-   * Decodes a URL-encoded string.
-   *
-   * @param decoded the to-be-encoded string
-   * @return the encoded string
-   */
-  public static String encode(String decoded) {
-    return Base64.getUrlEncoder().withoutPadding().encodeToString(decoded.getBytes());
-  }
-
-  /**
-   * Decodes a URL-encoded string.
-   *
-   * @param encoded the to-be-decoded string
-   * @return the decoded string
-   */
-  public static String decode(String encoded) {
-    try {
-      return new String(Base64.getUrlDecoder().decode(encoded));
-    } catch (IllegalArgumentException e) {
-      logger.warn("Failed to decode [{}].", encoded);
-      throw new BadRequestException("Invalid client ID [" + encoded + "]");
-    }
   }
 
 }
