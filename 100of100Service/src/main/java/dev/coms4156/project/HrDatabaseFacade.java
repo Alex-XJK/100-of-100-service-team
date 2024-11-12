@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dev.coms4156.project.interceptor.ParameterDecodingInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A singleton class of HR database facade.
  * This class is responsible for creating and managing the connection to the HR database.
  * Designed under the Singleton Design Pattern.
  */
 public class HrDatabaseFacade {
+  private static final Logger logger = LoggerFactory.getLogger(HrDatabaseFacade.class);
   private static final Map<Integer, HrDatabaseFacade> instances = new HashMap<>();
   // This boolean is used to switch between the real database and the test database
   private static boolean isTestMode = false;
@@ -28,13 +33,12 @@ public class HrDatabaseFacade {
    * @param organizationId the organization id
    */
   private HrDatabaseFacade(int organizationId) {
-    System.err.println("DEBUG >> Creating HrDatabaseFacade for organization " + organizationId);
     this.dbConnection = isTestMode ? dbConnectionStub : DatabaseConnection.getInstance();
     this.organizationId = organizationId;
     // Initialize the in-memory cache
     this.organization = dbConnection.getOrganization(organizationId);
     if (this.organization == null) {
-      System.err.println("DEBUG >> Organization " + organizationId + " not found");
+      logger.warn("Organization not found: {}", organizationId);
       throw new NotFoundException("Organization not found");
     }
     this.departments = dbConnection.getDepartments(organizationId);
