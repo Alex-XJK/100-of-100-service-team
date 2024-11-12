@@ -218,8 +218,7 @@ public class DatabaseConnectionStub extends DatabaseConnection {
    * @return the Organization object
    */
   public Organization getOrganization(int organizationId) {
-    return testOrganizations.getOrDefault(
-            organizationId, new Organization(organizationId, "Unknown"));
+    return testOrganizations.getOrDefault(organizationId, null);
   }
 
   /** Initializes the test data for the stub. */

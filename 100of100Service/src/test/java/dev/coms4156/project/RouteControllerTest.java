@@ -88,6 +88,20 @@ public class RouteControllerTest {
   }
 
   @Test
+  public void testGetOrganizationInfoNotExist() throws Exception {
+    mockMvc.perform(get("/getOrgInfo")
+            .param("cid", CLIENT_ID_99)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound()).andReturn();
+
+    // Repeated test to ensure the organization is not cached
+    mockMvc.perform(get("/getOrgInfo")
+            .param("cid", CLIENT_ID_99)
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isNotFound()).andReturn();
+  }
+
+  @Test
   public void testSetDeptHead() throws Exception {
     // patch for test
     mockMvc.perform(patch("/setDeptHead")

@@ -1,5 +1,6 @@
 package dev.coms4156.project;
 
+import dev.coms4156.project.exception.NotFoundException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,14 +28,17 @@ public class HrDatabaseFacade {
    * @param organizationId the organization id
    */
   private HrDatabaseFacade(int organizationId) {
+    System.err.println("DEBUG >> Creating HrDatabaseFacade for organization " + organizationId);
     this.dbConnection = isTestMode ? dbConnectionStub : DatabaseConnection.getInstance();
     this.organizationId = organizationId;
     // Initialize the in-memory cache
-    this.employees = dbConnection.getEmployees(organizationId);
-    this.departments = dbConnection.getDepartments(organizationId);
     this.organization = dbConnection.getOrganization(organizationId);
-    // TODO: What if this organization does not exist in the database?
-    // TODO: Should we throw a 403 exception here?
+    if (this.organization == null) {
+      System.err.println("DEBUG >> Organization " + organizationId + " not found");
+      throw new NotFoundException("Organization not found");
+    }
+    this.departments = dbConnection.getDepartments(organizationId);
+    this.employees = dbConnection.getEmployees(organizationId);
   }
 
   /**
