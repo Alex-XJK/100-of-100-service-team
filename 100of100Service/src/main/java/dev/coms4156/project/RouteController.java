@@ -13,6 +13,10 @@ import dev.coms4156.project.command.SetEmpSalCmd;
 import dev.coms4156.project.command.StatDeptBudgCmd;
 import dev.coms4156.project.command.StatDeptPerfCmd;
 import dev.coms4156.project.command.StatDeptPosiCmd;
+import dev.coms4156.project.exception.NotFoundException;
+import dev.coms4156.project.utils.CodecUtils;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -267,6 +271,34 @@ public class RouteController {
   ) {
     Command command = new AddEmpToDeptCmd(clientId, departmentId, name, hireDate);
     return new ResponseEntity<>(command.execute(), HttpStatus.CREATED);
+  }
+
+  /**
+   * Login as a client by validating the client ID.
+   * Notice: No associated command for this method.
+   *
+   * @param clientId the client ID
+   * @return a success message if the client ID is valid,
+   *        or throws a 401 exception if the operation fails
+   */
+  @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<?> login(
+      @RequestParam("cid") String clientId
+  ) {
+    Map<String, String> response = new HashMap<>();
+    try {
+      int cid = Integer.parseInt(CodecUtils.decode(clientId));
+      Command command = new GetOrgInfoCmd(cid);
+      Map<String, Object> orgResponse = (Map<String, Object>) command.execute();
+      String orgName = (String) orgResponse.get("name");
+      response.put("status", "success");
+      response.put("message", "Logged in as " + orgName);
+      return new ResponseEntity<>(response, HttpStatus.OK);
+    } catch (NotFoundException | IllegalArgumentException e) {
+      response.put("status", "failed");
+      response.put("message", "Invalid client ID");
+      return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
   }
 
   /* ***** DELETE METHODS ***** */
