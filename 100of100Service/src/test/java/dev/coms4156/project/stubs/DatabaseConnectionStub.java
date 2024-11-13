@@ -153,6 +153,55 @@ public class DatabaseConnectionStub extends DatabaseConnection {
     return employeeRemoved && deptRemoved;
   }
 
+
+  /**
+   * Updates an employee's information in the stubbed database for a given organization.
+   *
+   * @param organizationId the organization ID (client ID)
+   * @param employee the {@code Employee} object containing the updated information
+   * @return {@code true} if the employee was found and updated; {@code false} otherwise
+   */
+  @Override
+  public boolean updateEmployee(int organizationId, Employee employee) {
+    List<Employee> employees = testEmployees.get(organizationId);
+    boolean updated = false;
+
+    if (employees != null) {
+      for (int i = 0; i < employees.size(); i++) {
+        if (employees.get(i).getId() == employee.getId()) {
+          employees.set(i, employee);
+          updated = true;
+          break;
+        }
+      }
+    }
+
+    if (updated) {
+      // Update the employee in the departments' employee lists
+      List<Department> departments = testDepartments.get(organizationId);
+      if (departments != null) {
+        for (Department dept : departments) {
+          List<Employee> deptEmployees = dept.getEmployees();
+          if (deptEmployees != null) {
+            for (int i = 0; i < deptEmployees.size(); i++) {
+              if (deptEmployees.get(i).getId() == employee.getId()) {
+                deptEmployees.set(i, employee);
+                break;
+              }
+            }
+          }
+
+          Employee head = dept.getHead();
+          if (head != null && head.getId() == employee.getId()) {
+            dept.setHead(employee);
+          }
+        }
+      }
+    }
+
+    return updated;
+  }
+
   /**
    * Retrieves an employee for a given organization by external employee ID.
    *

@@ -118,8 +118,11 @@ public class HrDatabaseFacade {
    * @return true if the employee is updated successfully, false otherwise
    */
   public boolean updateEmployee(Employee employee) {
-    // TODO: Update the employee information into the database
-    return true;
+    boolean success = dbConnection.updateEmployee(this.organizationId, employee);
+    if (success) {
+      this.employees = dbConnection.getEmployees(this.organizationId);
+    }
+    return success;
   }
 
   /**
@@ -137,16 +140,20 @@ public class HrDatabaseFacade {
     return success;
   }
 
-  //  /**
-  //   * Updates the organization information.
-  //   *
-  //   * @param organization the updated organization object
-  //   * @return true if the organization is updated successfully, false otherwise
-  //   */
-  //  public boolean updateOrganization(Organization organization) {
-  //    // TODO: Update the organization information into the database
-  //    return true;
-  //  }
+    /**
+     * Updates the organization information.
+     *
+     * @param organization the updated organization object
+     * @return true if the organization is updated successfully, false otherwise
+     */
+  public boolean updateOrganization(Organization organization) {
+    boolean success = dbConnection.updateOrganization(organization);
+    if (success) {
+      // Update the in-memory cache
+      this.organization = organization;
+    }
+    return success;
+  }
 
   /**
    * Adds a new employee to a department.
@@ -178,16 +185,21 @@ public class HrDatabaseFacade {
     return null;
   }
 
-  //  /**
-  //   * Inserts a new department into the database.
-  //   *
-  //   * @param department the partially filled department object
-  //   * @return the real department object with the ID assigned
-  //   */
-  //  public Department insertDepartment(Department department) {
-  //    // TODO: Insert the department information into the database
-  //    return department;
-  //  }
+
+    /**
+     * Inserts a new department into the database.
+     *
+     * @param department the partially filled department object
+     * @return the real department object with the ID assigned
+     */
+  public Department insertDepartment(Department department) {
+    Department newDepartment = dbConnection.insertDepartment(this.organizationId, department);
+    if (newDepartment != null) {
+      // Update the in-memory cache
+      this.departments.add(newDepartment);
+    }
+    return newDepartment;
+  }
 
   /**
    * Removes an employee from a department.
@@ -215,18 +227,49 @@ public class HrDatabaseFacade {
     return success;
   }
 
-  //  /**
-  //   * Removes a department from the database.
-  //   *
-  //   * @param departmentId the department ID
-  //   * @return true if the department is removed successfully, false otherwise
-  //   */
-  //  public boolean removeDepartment(int departmentId) {
-  //    // TODO: Remove the department information from the database
-  //    return true;
-  //  }
+    /**
+     * Removes a department from the database.
+     *
+     * @param departmentId the department ID
+     * @return true if the department is removed successfully, false otherwise
+     */
+  public boolean removeDepartment(int departmentId) {
+    boolean success = dbConnection.removeDepartment(this.organizationId, departmentId);
+    if (success) {
+      // Update the in-memory cache
+      this.departments.removeIf(dept -> dept.getId() == departmentId);
+    }
+    return success;
+  }
+
 
   // TODO: How to insert(register) / remove(deregister) an organization?
+
+  public static Organization insertOrganization(Organization organization) {
+    DatabaseConnection dbConnection = isTestMode ? dbConnectionStub : DatabaseConnection.getInstance();
+    Organization newOrganization = dbConnection.insertOrganization(organization);
+    if (newOrganization != null) {
+      // Create a new instance of HrDatabaseFacade for the new organization
+      synchronized (HrDatabaseFacade.class) {
+        instances.put(newOrganization.getId(), new HrDatabaseFacade(newOrganization.getId()));
+      }
+    }
+    return newOrganization;
+  }
+
+
+  public static boolean removeOrganization(int organizationId) {
+    DatabaseConnection dbConnection = isTestMode ? dbConnectionStub : DatabaseConnection.getInstance();
+    boolean success = dbConnection.removeOrganization(organizationId);
+    if (success) {
+      // Remove the HrDatabaseFacade instance for the organization
+      synchronized (HrDatabaseFacade.class) {
+        instances.remove(organizationId);
+      }
+    }
+    return success;
+  }
+
 
   /**
    * Returns the unique instance of the HR database facade for a specific organization.

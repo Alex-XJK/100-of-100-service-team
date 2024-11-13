@@ -33,6 +33,7 @@ public class RouteControllerTest {
   private static final String CLIENT_ID_2 = "Mg";
   private static final String CLIENT_ID_99 = "OTk";
 
+  private static DatabaseConnection dbConnection;
   private static DatabaseConnectionStub dbConnectionStub;
 
   /**

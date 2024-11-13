@@ -20,10 +20,10 @@ public class DatabaseConnection {
 
   private DatabaseConnection() {
     try {
-      String url = "jdbc:mysql://database-100-team.c7mqy28ys9uq.us-east-1.rds.amazonaws.com:3306/"
+      String url = "jdbc:mysql://new-db.c3uqsummqbeu.us-east-1.rds.amazonaws.com:3306/"
               + "organization_management";
       String user = "admin";
-      String password = "sxy6cJEmv6iLT61qs7DO";
+      String password = "12345678";
       this.connection = DriverManager.getConnection(url, user, password);
     } catch (SQLException e) {
       e.printStackTrace();
@@ -340,6 +340,28 @@ public class DatabaseConnection {
     }
   }
 
+  public boolean updateEmployee(int organizationId, Employee employee) {
+    int internalEmployeeId = organizationId * 10000 + employee.getId();
+    String query = "UPDATE employees SET name = ?, position = ?, salary = ?, performance = ? "
+            + "WHERE organization_id = ? AND employee_id = ?";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+      pstmt.setString(1, employee.getName());
+      pstmt.setString(2, employee.getPosition().toString());
+      pstmt.setDouble(3, employee.getSalary());
+      pstmt.setDouble(4, employee.getPerformance());
+      pstmt.setInt(5, organizationId);
+      pstmt.setInt(6, internalEmployeeId);
+
+      int rowsAffected = pstmt.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+
   /**
    * Updates a department's information in the database.
    * This method handles all department updates including setting department head.
@@ -392,6 +414,168 @@ public class DatabaseConnection {
       return false;
     }
   }
+
+
+  public boolean updateOrganization(Organization organization) {
+    String query = "UPDATE organizations SET name = ? WHERE organization_id = ?";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+      pstmt.setString(1, organization.getName());
+      pstmt.setInt(2, organization.getId());
+
+      int rowsAffected = pstmt.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+
+  public Department insertDepartment(int organizationId, Department department) {
+    // Generate a new internal department ID
+    String maxIdQuery = "SELECT MAX(department_id) as max_id FROM departments WHERE organization_id = ?";
+    int newDepartmentId;
+
+    try (PreparedStatement pstmt = connection.prepareStatement(maxIdQuery)) {
+      pstmt.setInt(1, organizationId);
+      ResultSet rs = pstmt.executeQuery();
+      if (rs.next()) {
+        int maxId = rs.getInt("max_id");
+        if (rs.wasNull()) {
+          newDepartmentId = organizationId * 10000 + 1;
+        } else {
+          newDepartmentId = maxId + 1;
+        }
+      } else {
+        newDepartmentId = organizationId * 10000 + 1;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    String insertDepartmentQuery = "INSERT INTO departments (department_id, organization_id, name) VALUES (?, ?, ?)";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(insertDepartmentQuery)) {
+      pstmt.setInt(1, newDepartmentId);
+      pstmt.setInt(2, organizationId);
+      pstmt.setString(3, department.getName());
+
+      int rowsAffected = pstmt.executeUpdate();
+      if (rowsAffected > 0) {
+        int externalDeptId = newDepartmentId % 10000;
+        Department newDept = new Department(externalDeptId, department.getName(), new ArrayList<>());
+        return newDept;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+
+  public boolean removeDepartment(int organizationId, int externalDepartmentId) {
+    int internalDepartmentId = organizationId * 10000 + externalDepartmentId;
+
+    // First, remove all employees in the department
+    String deleteEmployeesQuery = "DELETE FROM employees WHERE organization_id = ? AND department_id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(deleteEmployeesQuery)) {
+      pstmt.setInt(1, organizationId);
+      pstmt.setInt(2, internalDepartmentId);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+
+    // Then, remove the department
+    String deleteDepartmentQuery = "DELETE FROM departments WHERE organization_id = ? AND department_id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(deleteDepartmentQuery)) {
+      pstmt.setInt(1, organizationId);
+      pstmt.setInt(2, internalDepartmentId);
+
+      int rowsAffected = pstmt.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+
+  public Organization insertOrganization(Organization organization) {
+    // Generate a new organization ID
+    String maxIdQuery = "SELECT MAX(organization_id) as max_id FROM organizations";
+    int newOrganizationId;
+
+    try (PreparedStatement pstmt = connection.prepareStatement(maxIdQuery)) {
+      ResultSet rs = pstmt.executeQuery();
+      if (rs.next()) {
+        int maxId = rs.getInt("max_id");
+        if (rs.wasNull()) {
+          newOrganizationId = 1;
+        } else {
+          newOrganizationId = maxId + 1;
+        }
+      } else {
+        newOrganizationId = 1;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    String insertOrganizationQuery = "INSERT INTO organizations (organization_id, name) VALUES (?, ?)";
+
+    try (PreparedStatement pstmt = connection.prepareStatement(insertOrganizationQuery)) {
+      pstmt.setInt(1, newOrganizationId);
+      pstmt.setString(2, organization.getName());
+
+      int rowsAffected = pstmt.executeUpdate();
+      if (rowsAffected > 0) {
+        Organization newOrg = new Organization(newOrganizationId, organization.getName());
+        return newOrg;
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+
+  public boolean removeOrganization(int organizationId) {
+    // Delete employees
+    String deleteEmployeesQuery = "DELETE FROM employees WHERE organization_id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(deleteEmployeesQuery)) {
+      pstmt.setInt(1, organizationId);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+
+    String deleteDepartmentsQuery = "DELETE FROM departments WHERE organization_id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(deleteDepartmentsQuery)) {
+      pstmt.setInt(1, organizationId);
+      pstmt.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+
+    String deleteOrganizationQuery = "DELETE FROM organizations WHERE organization_id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(deleteOrganizationQuery)) {
+      pstmt.setInt(1, organizationId);
+
+      int rowsAffected = pstmt.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
 
   /**
    * Returns the unique instance of the database connection.
