@@ -10,8 +10,8 @@ import java.util.Map;
  * An organization is a composite of employees and departments.
  */
 public class Organization extends OrganizationComposite {
-  private final List<Employee> employees;
-  private final List<Department> departments;
+  private List<Employee> employees;
+  private List<Department> departments;
 
   /**
    * Constructs an organization with the given ID and name.
@@ -24,6 +24,24 @@ public class Organization extends OrganizationComposite {
     this.typeName = "Organization";
     this.employees = new ArrayList<>();
     this.departments = new ArrayList<>();
+  }
+
+  /**
+   * Set the employees of the organization in batch.
+   *
+   * @param employees the employees list to be set
+   */
+  public void setEmployees(List<Employee> employees) {
+    this.employees = employees;
+  }
+
+  /**
+   * Set the departments of the organization in batch.
+   *
+   * @param departments the departments list to be set
+   */
+  public void setDepartments(List<Department> departments) {
+    this.departments = departments;
   }
 
   /**

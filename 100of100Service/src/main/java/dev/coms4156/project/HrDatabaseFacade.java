@@ -28,7 +28,7 @@ public class HrDatabaseFacade {
   private Organization organization;
 
   /**
-   * Constructs a HR database facade instance for a specific organization.
+   * Constructs an HR database facade instance for a specific organization.
    *
    * @param organizationId the organization id
    */
@@ -42,7 +42,9 @@ public class HrDatabaseFacade {
       throw new NotFoundException("Organization not found");
     }
     this.departments = dbConnection.getDepartments(organizationId);
+    this.organization.setDepartments(this.departments);
     this.employees = dbConnection.getEmployees(organizationId);
+    this.organization.setEmployees(this.employees);
   }
 
   /**
