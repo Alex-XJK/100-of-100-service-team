@@ -304,12 +304,14 @@ public class DatabaseConnectionStub extends DatabaseConnection {
     // Departments for Client 1
     Department engineering1 = new Department(1, "Engineering", new ArrayList<>());
     Department marketing1 = new Department(2, "Marketing", new ArrayList<>());
+    System.out.println("DEBUG >> marketing addr: " + System.identityHashCode(marketing1));
 
     // Employees for Client 1
     Employee johnDoe = new Employee(
         1, "John Doe", new Date(), "SoftwareEngineer", 100, 80
     );
     Employee janeSmith = new Employee(2, "Jane Smith", new Date());
+    System.out.println("DEBUG >> jane addr: " + System.identityHashCode(janeSmith));
 
     // Add employees to departments for Client 1
     engineering1.addEmployee(johnDoe);
@@ -317,6 +319,7 @@ public class DatabaseConnectionStub extends DatabaseConnection {
 
     // Organization for Client 1
     Organization organization1 = new Organization(clientId1, "Organization One");
+    System.out.println("DEBUG >> org1 addr: " + System.identityHashCode(organization1));
     organization1.addDepartment(engineering1);
     organization1.addDepartment(marketing1);
 
