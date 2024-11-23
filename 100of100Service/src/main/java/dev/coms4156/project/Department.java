@@ -96,6 +96,7 @@ public class Department extends OrganizationComposite {
 
   /**
    * Returns a statistic of the employees' positions in the department.
+   *
    * @return a Map of the statistic that can be easily converted to JSON
    */
   public Map<String, Integer> getEmployeePositionStatisticMap() {
@@ -111,6 +112,7 @@ public class Department extends OrganizationComposite {
 
   /**
    * Returns a statistic of the employees' salaries in the department.
+   *
    * @return a Map of the statistic that can be easily converted to JSON
    */
   public Map<String, Object> getEmployeeSalaryStatisticMap() {
@@ -161,6 +163,7 @@ public class Department extends OrganizationComposite {
 
   /**
    * Returns a statistic of the employees' performance in the department.
+   *
    * @return a Map of the statistic that can be easily converted to JSON
    */
   public Map<String, Object> getEmployeePerformanceStatisticMap() {

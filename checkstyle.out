@@ -7,11 +7,6 @@
 [INFO] 
 [INFO] --- checkstyle:3.2.0:check (default-cli) @ 100of100Service ---
 [INFO] Starting audit...
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:99: Javadoc tag '@return' should be preceded with an empty line. [RequireEmptyLineBeforeBlockTagGroup]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:114: Javadoc tag '@return' should be preceded with an empty line. [RequireEmptyLineBeforeBlockTagGroup]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:164: Javadoc tag '@return' should be preceded with an empty line. [RequireEmptyLineBeforeBlockTagGroup]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/utils/CodecUtils.java:5:1: Missing a Javadoc comment. [MissingJavadocType]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/utils/CodecUtils.java:6: First sentence of Javadoc is missing an ending period. [SummaryJavadoc]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/command/RemoveEmpFromDeptCmd.java:35:5: Distance between variable 'response' declaration and its first usage is 4, but allowed 3.  Consider making that variable final if you still need to store its value in advance (before method calls that might have side effects on the original value). [VariableDeclarationUsageDistance]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/command/SetDeptHeadCmd.java:35:5: Distance between variable 'response' declaration and its first usage is 5, but allowed 3.  Consider making that variable final if you still need to store its value in advance (before method calls that might have side effects on the original value). [VariableDeclarationUsageDistance]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/command/AddEmpToDeptCmd.java:53:5: Distance between variable 'response' declaration and its first usage is 5, but allowed 3.  Consider making that variable final if you still need to store its value in advance (before method calls that might have side effects on the original value). [VariableDeclarationUsageDistance]
@@ -20,6 +15,6 @@ Audit done.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.159 s
-[INFO] Finished at: 2024-11-23T11:55:42-05:00
+[INFO] Total time:  1.028 s
+[INFO] Finished at: 2024-11-23T11:59:02-05:00
 [INFO] ------------------------------------------------------------------------

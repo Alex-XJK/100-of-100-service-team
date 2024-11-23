@@ -2,9 +2,12 @@ package dev.coms4156.project.utils;
 
 import java.util.Base64;
 
+/**
+ * This class provides utility methods for encoding and decoding strings.
+ */
 public class CodecUtils {
   /**
-   * Private constructor to prevent instantiation
+   * Private constructor to prevent instantiation.
    */
   private CodecUtils() {}
 
