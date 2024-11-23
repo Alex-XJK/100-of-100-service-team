@@ -1,7 +1,6 @@
 package dev.coms4156.project;
 
 import dev.coms4156.project.exception.InternalServerErrorException;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
