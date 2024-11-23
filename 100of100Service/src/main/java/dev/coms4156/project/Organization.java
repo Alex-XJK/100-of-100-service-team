@@ -117,8 +117,8 @@ public class Organization extends OrganizationComposite {
 
     // add ids
     List<Integer> departmentIds = this.departments.stream()
-      .map(Department::getId)
-      .toList();
+        .map(Department::getId)
+        .toList();
     result.put("departments_id", departmentIds);
 
     return result;

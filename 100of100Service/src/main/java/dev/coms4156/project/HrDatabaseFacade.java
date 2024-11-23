@@ -267,10 +267,10 @@ public class HrDatabaseFacade {
       for (Department department : this.departments) {
         if (department.getId() == departmentId) {
           Employee employeeToRemove = this.employees
-            .stream()
-            .filter(emp -> emp.getId() == employeeId)
-            .findFirst()
-            .orElse(null);
+              .stream()
+              .filter(emp -> emp.getId() == employeeId)
+              .findFirst()
+              .orElse(null);
 
           if (employeeToRemove != null) {
             department.removeEmployee(employeeToRemove);

@@ -270,7 +270,7 @@ public class MysqlConnection implements DatabaseConnection {
 
     // Insert the new employee
     String insertEmployeeQuery =
-      "INSERT INTO employees "
+        "INSERT INTO employees "
         + "(employee_id, organization_id, department_id, name, hire_date, position, salary, performance) "
         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
