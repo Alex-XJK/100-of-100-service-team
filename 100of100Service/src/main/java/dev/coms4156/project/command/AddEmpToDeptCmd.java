@@ -50,7 +50,6 @@ public class AddEmpToDeptCmd implements Command {
   @Override
   public Object execute() {
     HrDatabaseFacade dbFacade = HrDatabaseFacade.getInstance(clientId);
-    Map<String, Object> response = new HashMap<>();
 
     // Fetch the department from the in-memory cache or DB
     Department department = dbFacade.getDepartment(departmentId);
@@ -74,6 +73,7 @@ public class AddEmpToDeptCmd implements Command {
       throw new BadRequestException("Failed to add employee to department");
     }
 
+    Map<String, Object> response = new HashMap<>();
     response.put("status", 200);
     response.put(
         "message",

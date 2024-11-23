@@ -32,7 +32,6 @@ public class RemoveEmpFromDeptCmd implements Command {
   @Override
   public Object execute() {
     HrDatabaseFacade dbFacade = HrDatabaseFacade.getInstance(clientId);
-    Map<String, Object> response = new HashMap<>();
 
     // Get the department from the database
     Department department = dbFacade.getDepartment(departmentId);
@@ -55,6 +54,8 @@ public class RemoveEmpFromDeptCmd implements Command {
       throw new BadRequestException("Failed to remove employee [" + employeeId
               + "] from department [" + departmentId + "]");
     }
+
+    Map<String, Object> response = new HashMap<>();
     response.put("status", 200);
     response.put("message", "Employee removed from department: " + department.getName());
     return response;

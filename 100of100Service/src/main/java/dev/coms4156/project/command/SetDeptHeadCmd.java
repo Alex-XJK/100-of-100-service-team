@@ -32,7 +32,6 @@ public class SetDeptHeadCmd implements Command {
 
   @Override
   public Object execute() {
-    Map<String, Object> response = new HashMap<>();
     HrDatabaseFacade db = HrDatabaseFacade.getInstance(this.clientId);
     Department department = db.getDepartment(this.departmentId);
     if (department == null) {
@@ -53,6 +52,7 @@ public class SetDeptHeadCmd implements Command {
       );
     }
 
+    Map<String, Object> response = new HashMap<>();
     response.put("status", 200);
     response.put("message", "Successfully set head of department [" + this.departmentId + "] "
         + "to employee [" + this.employeeId + "]");
