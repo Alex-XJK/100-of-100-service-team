@@ -292,7 +292,12 @@ public class HrDatabaseFacade {
     return success;
   }
 
-
+  /**
+   * Inserts a new organization into the database.
+   *
+   * @param organization the partially filled organization object
+   * @return the real organization object with the ID assigned
+   */
   public static Organization insertOrganization(Organization organization) {
     if (dbConnection == null) {
       throw new IllegalStateException("Database connection is not initialized");
@@ -307,7 +312,12 @@ public class HrDatabaseFacade {
     return newOrganization;
   }
 
-
+  /**
+   * Removes an organization from the database.
+   *
+   * @param organizationId the organization ID
+   * @return true if the organization is removed successfully, false otherwise
+   */
   public static boolean removeOrganization(int organizationId) {
     if (dbConnection == null) {
       throw new IllegalStateException("Database connection is not initialized");

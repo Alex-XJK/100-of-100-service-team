@@ -9,6 +9,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ServiceApplication {
 
+  /**
+   * Main method to run the Spring Boot application.
+   * It sets the production database connection to be the real MySQL connection.
+   *
+   * @param args Command line arguments
+   */
   public static void main(String[] args) {
     // Set the production database connection to be the real MySQL connection
     DatabaseConnection db = MysqlConnection.getInstance();

@@ -359,17 +359,4 @@ public class RouteController {
     return new ResponseEntity<>(command.execute(), HttpStatus.OK);
   }
 
-  /**
-   * Handles any exceptions that occur in controller.
-   *
-   * @param e the exception that occurred
-   * @return the response entity
-   * @deprecated This method is replaced by the global exception handler after 80586a8
-   */
-  @Deprecated
-  private ResponseEntity<?> handleException(Exception e) {
-    System.out.println(e.toString());
-    return new ResponseEntity<>("An Error has occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-  }
-
 }

@@ -7,10 +7,7 @@
 [INFO] 
 [INFO] --- checkstyle:3.2.0:check (default-cli) @ 100of100Service ---
 [INFO] Starting audit...
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/ServiceApplication.java:12:3: Missing a Javadoc comment. [MissingJavadocMethod]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:162:27: WhitespaceAround: ':' is not preceded with whitespace. [WhitespaceAround]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:296:3: Missing a Javadoc comment. [MissingJavadocMethod]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:311:3: Missing a Javadoc comment. [MissingJavadocMethod]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:98: Javadoc tag '@return' should be preceded with an empty line. [RequireEmptyLineBeforeBlockTagGroup]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:100:3: 'METHOD_DEF' should be separated from previous line. [EmptyLineSeparator]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:104:66: '?' should be on a new line. [OperatorWrap]
@@ -21,15 +18,11 @@
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/command/RemoveEmpFromDeptCmd.java:35:5: Distance between variable 'response' declaration and its first usage is 4, but allowed 3.  Consider making that variable final if you still need to store its value in advance (before method calls that might have side effects on the original value). [VariableDeclarationUsageDistance]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/command/SetDeptHeadCmd.java:35:5: Distance between variable 'response' declaration and its first usage is 5, but allowed 3.  Consider making that variable final if you still need to store its value in advance (before method calls that might have side effects on the original value). [VariableDeclarationUsageDistance]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/command/AddEmpToDeptCmd.java:53:5: Distance between variable 'response' declaration and its first usage is 5, but allowed 3.  Consider making that variable final if you still need to store its value in advance (before method calls that might have side effects on the original value). [VariableDeclarationUsageDistance]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/exception/GlobalExceptionHandler.java:33:3: Missing a Javadoc comment. [MissingJavadocMethod]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/exception/GlobalExceptionHandler.java:40:3: Missing a Javadoc comment. [MissingJavadocMethod]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/exception/GlobalExceptionHandler.java:47:3: Missing a Javadoc comment. [MissingJavadocMethod]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/exception/GlobalExceptionHandler.java:54:3: Missing a Javadoc comment. [MissingJavadocMethod]
 Audit done.
 [INFO] You have 0 Checkstyle violations.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.295 s
-[INFO] Finished at: 2024-11-23T11:42:48-05:00
+[INFO] Total time:  1.286 s
+[INFO] Finished at: 2024-11-23T11:51:11-05:00
 [INFO] ------------------------------------------------------------------------

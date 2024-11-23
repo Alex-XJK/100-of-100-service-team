@@ -30,6 +30,12 @@ public class GlobalExceptionHandler {
     return this.errorResponse(title + ": " + ex.getMessage());
   }
 
+  /**
+   * Exception handler to catch NotFoundException exceptions thrown by the application.
+   *
+   * @param ex The NotFoundException exception
+   * @return A 404 response entity with the error message
+   */
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity<?> handleItemNotFoundException(NotFoundException ex) {
     return ResponseEntity
@@ -37,6 +43,12 @@ public class GlobalExceptionHandler {
         .body(this.errorResponse(ex));
   }
 
+  /**
+   * Exception handler to catch ForbiddenException exceptions thrown by the application.
+   *
+   * @param ex The ForbiddenException exception
+   * @return A 403 response entity with the error message
+   */
   @ExceptionHandler(ForbiddenException.class)
   public ResponseEntity<?> handleForbiddenException(ForbiddenException ex) {
     return ResponseEntity
@@ -44,6 +56,12 @@ public class GlobalExceptionHandler {
         .body(this.errorResponse(ex));
   }
 
+  /**
+   * Exception handler to catch BadRequestException exceptions thrown by the application.
+   *
+   * @param ex The BadRequestException exception
+   * @return A 400 response entity with the error message
+   */
   @ExceptionHandler(BadRequestException.class)
   public ResponseEntity<?> handleBadRequestException(BadRequestException ex) {
     return ResponseEntity
@@ -51,6 +69,12 @@ public class GlobalExceptionHandler {
         .body(this.errorResponse(ex));
   }
 
+  /**
+   * Exception handler to catch IllegalArgumentException exceptions thrown by the application.
+   *
+   * @param ex The IllegalArgumentException exception
+   * @return A 400 response entity with the error message
+   */
   @ExceptionHandler(IllegalArgumentException.class)
   public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
     return ResponseEntity
@@ -60,6 +84,9 @@ public class GlobalExceptionHandler {
 
   /**
    * Exception handler to catch Internal Server Error exceptions thrown by the application.
+   *
+   * @param ex The general exception
+   * @return A 500 response entity with the error message
    */
   @ExceptionHandler(Exception.class)
   public ResponseEntity<?> handleException(Exception ex) {
