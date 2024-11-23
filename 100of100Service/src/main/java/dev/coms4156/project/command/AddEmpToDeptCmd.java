@@ -75,7 +75,10 @@ public class AddEmpToDeptCmd implements Command {
     }
 
     response.put("status", 200);
-    response.put("message", "Employee [" + newEmployee.getId() + "] added to department: " + department.getName());
+    response.put(
+        "message",
+        "Employee [" + newEmployee.getId() + "] added to department: " + department.getName()
+    );
     return response;
   }
 }

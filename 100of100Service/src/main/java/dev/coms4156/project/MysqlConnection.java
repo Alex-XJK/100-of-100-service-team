@@ -271,7 +271,8 @@ public class MysqlConnection implements DatabaseConnection {
     // Insert the new employee
     String insertEmployeeQuery =
         "INSERT INTO employees "
-        + "(employee_id, organization_id, department_id, name, hire_date, position, salary, performance) "
+        + "(employee_id, organization_id, department_id, "
+        + "name, hire_date, position, salary, performance) "
         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     try (PreparedStatement pstmt = connection.prepareStatement(insertEmployeeQuery)) {
@@ -442,7 +443,9 @@ public class MysqlConnection implements DatabaseConnection {
   @Override
   public Department insertDepartment(int organizationId, Department department) {
     // Generate a new internal department ID
-    String maxIdQuery = "SELECT MAX(department_id) as max_id FROM departments WHERE organization_id = ?";
+    String maxIdQuery =
+        "SELECT MAX(department_id) as max_id FROM departments WHERE organization_id = ?";
+
     int newDepartmentId;
 
     try (PreparedStatement pstmt = connection.prepareStatement(maxIdQuery)) {
@@ -463,7 +466,8 @@ public class MysqlConnection implements DatabaseConnection {
       return null;
     }
 
-    String insertDepartmentQuery = "INSERT INTO departments (department_id, organization_id, name) VALUES (?, ?, ?)";
+    String insertDepartmentQuery =
+        "INSERT INTO departments (department_id, organization_id, name) VALUES (?, ?, ?)";
 
     try (PreparedStatement pstmt = connection.prepareStatement(insertDepartmentQuery)) {
       pstmt.setInt(1, newDepartmentId);
@@ -473,7 +477,8 @@ public class MysqlConnection implements DatabaseConnection {
       int rowsAffected = pstmt.executeUpdate();
       if (rowsAffected > 0) {
         int externalDeptId = newDepartmentId % 10000;
-        Department newDept = new Department(externalDeptId, department.getName(), new ArrayList<>());
+        Department newDept =
+            new Department(externalDeptId, department.getName(), new ArrayList<>());
         return newDept;
       }
     } catch (SQLException e) {
@@ -487,7 +492,9 @@ public class MysqlConnection implements DatabaseConnection {
     int internalDepartmentId = organizationId * 10000 + externalDepartmentId;
 
     // First, remove all employees in the department
-    String deleteEmployeesQuery = "DELETE FROM employees WHERE organization_id = ? AND department_id = ?";
+    String deleteEmployeesQuery =
+        "DELETE FROM employees WHERE organization_id = ? AND department_id = ?";
+
     try (PreparedStatement pstmt = connection.prepareStatement(deleteEmployeesQuery)) {
       pstmt.setInt(1, organizationId);
       pstmt.setInt(2, internalDepartmentId);
@@ -498,7 +505,9 @@ public class MysqlConnection implements DatabaseConnection {
     }
 
     // Then, remove the department
-    String deleteDepartmentQuery = "DELETE FROM departments WHERE organization_id = ? AND department_id = ?";
+    String deleteDepartmentQuery =
+        "DELETE FROM departments WHERE organization_id = ? AND department_id = ?";
+
     try (PreparedStatement pstmt = connection.prepareStatement(deleteDepartmentQuery)) {
       pstmt.setInt(1, organizationId);
       pstmt.setInt(2, internalDepartmentId);
@@ -534,7 +543,8 @@ public class MysqlConnection implements DatabaseConnection {
       return null;
     }
 
-    String insertOrganizationQuery = "INSERT INTO organizations (organization_id, name) VALUES (?, ?)";
+    String insertOrganizationQuery =
+        "INSERT INTO organizations (organization_id, name) VALUES (?, ?)";
 
     try (PreparedStatement pstmt = connection.prepareStatement(insertOrganizationQuery)) {
       pstmt.setInt(1, newOrganizationId);

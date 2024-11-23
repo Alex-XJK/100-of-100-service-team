@@ -402,7 +402,8 @@ public class RouteControllerTest {
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn();
     content = mvcResult2.getResponse().getContentAsString();
-    expected = "{\"message\":\"Employee position information updated successfully\",\"status\":200}";
+    expected = """
+        {"message":"Employee position information updated successfully","status":200}""";
     Assertions.assertEquals(expected, content);
 
     MvcResult mvcResult4 = mockMvc.perform(patch("/updateEmpInfo")
@@ -413,7 +414,8 @@ public class RouteControllerTest {
         .accept(MediaType.APPLICATION_JSON))
         .andExpect(status().isOk()).andReturn();
     content = mvcResult4.getResponse().getContentAsString();
-    expected = "{\"message\":\"Employee salary performance information updated successfully\",\"status\":200}";
+    expected = """
+        {"message":"Employee salary performance information updated successfully","status":200}""";
     Assertions.assertEquals(expected, content);
   }
 

@@ -101,7 +101,8 @@ public class Department extends OrganizationComposite {
     Map<String, Integer> result = new HashMap<>();
     for (Employee e : this.employees) {
       String position = e.getPosition();
-      position = (position == null || position.trim().isEmpty()) ? "unassigned" : position.trim().toLowerCase();
+      position = (position == null || position.trim().isEmpty()) ?
+          "unassigned" : position.trim().toLowerCase();
       result.put(position, result.getOrDefault(position, 0) + 1);
     }
     return result;

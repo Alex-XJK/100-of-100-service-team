@@ -60,8 +60,13 @@ public class ExceptionTest {
 
   @Test
   public void testInternalServerErrorException() {
-    Assertions.assertThrows(InternalServerErrorException.class, this::throwInternalServerErrorException);
-    Assertions.assertThrows(InternalServerErrorException.class, () -> this.throwInternalServerErrorException("Err"));
+    Assertions.assertThrows(
+        InternalServerErrorException.class,
+        this::throwInternalServerErrorException
+    );
+    Assertions.assertThrows(
+        InternalServerErrorException.class, () -> this.throwInternalServerErrorException("Err")
+    );
   }
 
   @Test
