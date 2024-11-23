@@ -145,10 +145,6 @@ public class HrDatabaseFacade {
           }
         }
       }
-//      System.out.println("Updated Employee List:");
-//      for (Employee emp : this.employees) {
-//        System.out.println(emp.toJson());
-//      }
     }
     return success;
   }
@@ -172,12 +168,12 @@ public class HrDatabaseFacade {
     return success;
   }
 
-    /**
-     * Updates the organization information.
-     *
-     * @param organization the updated organization object
-     * @return true if the organization is updated successfully, false otherwise
-     */
+  /**
+   * Updates the organization information.
+   *
+   * @param organization the updated organization object
+   * @return true if the organization is updated successfully, false otherwise
+   */
   public boolean updateOrganization(Organization organization) {
     boolean success = dbConnection.updateOrganization(organization);
     if (success) {
@@ -221,20 +217,18 @@ public class HrDatabaseFacade {
           break;
         }
       }
-//      this.departments = dbConnection.getDepartments(this.organizationId);
-
       return newEmployee;
     }
     return null;
   }
 
 
-    /**
-     * Inserts a new department into the database.
-     *
-     * @param department the partially filled department object
-     * @return the real department object with the ID assigned
-     */
+  /**
+   * Inserts a new department into the database.
+   *
+   * @param department the partially filled department object
+   * @return the real department object with the ID assigned
+   */
   public Department insertDepartment(Department department) {
     Department newDepartment = dbConnection.insertDepartment(this.organizationId, department);
     if (newDepartment != null) {
@@ -278,18 +272,17 @@ public class HrDatabaseFacade {
           break;
         }
       }
-//      this.departments = dbConnection.getDepartments(this.organizationId);
     }
 
     return success;
   }
 
-    /**
-     * Removes a department from the database.
-     *
-     * @param departmentId the department ID
-     * @return true if the department is removed successfully, false otherwise
-     */
+  /**
+   * Removes a department from the database.
+   *
+   * @param departmentId the department ID
+   * @return true if the department is removed successfully, false otherwise
+   */
   public boolean removeDepartment(int departmentId) {
     boolean success = dbConnection.removeDepartment(this.organizationId, departmentId);
     if (success) {
@@ -299,8 +292,6 @@ public class HrDatabaseFacade {
     return success;
   }
 
-
-  // TODO: How to insert(register) / remove(deregister) an organization?
 
   public static Organization insertOrganization(Organization organization) {
     if (dbConnection == null) {

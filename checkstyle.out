@@ -8,15 +8,9 @@
 [INFO] --- checkstyle:3.2.0:check (default-cli) @ 100of100Service ---
 [INFO] Starting audit...
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/ServiceApplication.java:12:3: Missing a Javadoc comment. [MissingJavadocMethod]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:151:1: Comment has incorrect indentation level 0, expected is 6, indentation should be the same level as line 137. [CommentsIndentation]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:166:27: WhitespaceAround: ':' is not preceded with whitespace. [WhitespaceAround]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:175:5: Block comment has incorrect indentation level 4, expected is 2, indentation should be the same level as line 181. [CommentsIndentation]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:224:1: Comment has incorrect indentation level 0, expected is 6, indentation should be the same level as line 226. [CommentsIndentation]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:232:5: Block comment has incorrect indentation level 4, expected is 2, indentation should be the same level as line 238. [CommentsIndentation]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:281:1: Comment has incorrect indentation level 0, expected is 6, indentation should be the same level as line 267. [CommentsIndentation]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:287:5: Block comment has incorrect indentation level 4, expected is 2, indentation should be the same level as line 293. [CommentsIndentation]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:305:3: Missing a Javadoc comment. [MissingJavadocMethod]
-[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:320:3: Missing a Javadoc comment. [MissingJavadocMethod]
+[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:162:27: WhitespaceAround: ':' is not preceded with whitespace. [WhitespaceAround]
+[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:296:3: Missing a Javadoc comment. [MissingJavadocMethod]
+[WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/HrDatabaseFacade.java:311:3: Missing a Javadoc comment. [MissingJavadocMethod]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:98: Javadoc tag '@return' should be preceded with an empty line. [RequireEmptyLineBeforeBlockTagGroup]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:100:3: 'METHOD_DEF' should be separated from previous line. [EmptyLineSeparator]
 [WARN] /Users/alex/Documents/Columbia-2024Fall/COMS4156-Advanced_Software_Engineering/100-of-100-service-team/100of100Service/src/main/java/dev/coms4156/project/Department.java:104: Line is longer than 100 characters (found 112). [LineLength]
@@ -53,6 +47,6 @@ Audit done.
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.411 s
-[INFO] Finished at: 2024-11-23T11:27:07-05:00
+[INFO] Total time:  1.297 s
+[INFO] Finished at: 2024-11-23T11:31:10-05:00
 [INFO] ------------------------------------------------------------------------
