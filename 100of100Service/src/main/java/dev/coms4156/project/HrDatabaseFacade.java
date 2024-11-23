@@ -159,7 +159,7 @@ public class HrDatabaseFacade {
     boolean success = dbConnection.updateDepartment(this.organizationId, department);
     if (success) {
       List<Department> updatedDepartments = dbConnection.getDepartments(this.organizationId);
-      for (Department dept: updatedDepartments) {
+      for (Department dept : updatedDepartments) {
         System.out.println(dept.toJson());
       }
       this.organization.setDepartments(updatedDepartments);

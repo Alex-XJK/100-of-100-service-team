@@ -93,6 +93,7 @@ public class Department extends OrganizationComposite {
     this.head = head;
     return true;
   }
+
   /**
    * Returns a statistic of the employees' positions in the department.
    * @return a Map of the statistic that can be easily converted to JSON
@@ -101,8 +102,8 @@ public class Department extends OrganizationComposite {
     Map<String, Integer> result = new HashMap<>();
     for (Employee e : this.employees) {
       String position = e.getPosition();
-      position = (position == null || position.trim().isEmpty()) ?
-          "unassigned" : position.trim().toLowerCase();
+      position = (position == null || position.trim().isEmpty())
+          ? "unassigned" : position.trim().toLowerCase();
       result.put(position, result.getOrDefault(position, 0) + 1);
     }
     return result;
