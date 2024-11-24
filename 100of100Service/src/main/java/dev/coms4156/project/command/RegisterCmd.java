@@ -32,7 +32,7 @@ public class RegisterCmd implements Command {
     } else {
       response.put("status", "success");
       response.put("message", "Organization " + newOrg.getName() + " created");
-      String orgId = CodecUtils.encode((newOrg.getId() + ""));
+      String orgId = CodecUtils.encode(newOrg.getId() + "");
       response.put("token", orgId);
     }
     return response;

@@ -1,9 +1,5 @@
-./src/main/java/dev/coms4156/project/Department.java:107:	UseLocaleWithCaseConversions:	When doing a String.toLowerCase()/toUpperCase() call, use a Locale
-./src/main/java/dev/coms4156/project/HrDatabaseFacade.java:15:	ClassWithOnlyPrivateConstructorsShouldBeFinal:	This class has only private constructors and may be final
 ./src/main/java/dev/coms4156/project/HrDatabaseFacade.java:362:	GuardLogStatement:	Logger calls should be surrounded by log level guards.
-./src/main/java/dev/coms4156/project/InmemConnection.java:12:	ClassWithOnlyPrivateConstructorsShouldBeFinal:	This class has only private constructors and may be final
 ./src/main/java/dev/coms4156/project/InmemConnection.java:13:	AvoidUsingVolatile:	Use of modifier volatile is not recommended.
-./src/main/java/dev/coms4156/project/MysqlConnection.java:17:	ClassWithOnlyPrivateConstructorsShouldBeFinal:	This class has only private constructors and may be final
 ./src/main/java/dev/coms4156/project/MysqlConnection.java:18:	AvoidUsingVolatile:	Use of modifier volatile is not recommended.
 ./src/main/java/dev/coms4156/project/MysqlConnection.java:35:	PreserveStackTrace:	Thrown exception does not preserve the stack trace of exception 'e' on all code paths
 ./src/main/java/dev/coms4156/project/MysqlConnection.java:53:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
@@ -20,13 +16,9 @@
 ./src/main/java/dev/coms4156/project/MysqlConnection.java:554:	UnnecessaryLocalBeforeReturn:	Consider simply returning the value vs storing it in local variable 'newOrg'
 ./src/main/java/dev/coms4156/project/RouteController.java:334:	LiteralsFirstInComparisons:	Position literals first in String comparisons
 ./src/main/java/dev/coms4156/project/ServiceApplication.java:10:	UseUtilityClass:	This utility class has a non-private constructor
-./src/main/java/dev/coms4156/project/command/RegisterCmd.java:35:	UselessParentheses:	Useless parentheses.
 ./src/main/java/dev/coms4156/project/exception/GlobalExceptionHandler.java:25:	UnusedPrivateMethod:	Avoid unused private methods such as 'errorResponse(Exception)'.
 ./src/main/java/dev/coms4156/project/interceptor/ParameterDecodingInterceptor.java:42:	PreserveStackTrace:	Thrown exception does not preserve the stack trace of exception 'e' on all code paths
-./src/main/java/dev/coms4156/project/utils/CodecUtils.java:8:	ClassWithOnlyPrivateConstructorsShouldBeFinal:	This class has only private constructors and may be final
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:17:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwBadRequestException()'.
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:25:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwForbiddenException()'.
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:33:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwInternalServerErrorException()'.
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:41:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwNotFoundException()'.
-./src/test/java/dev/coms4156/project/RouteControllerTest.java:152:	UselessParentheses:	Useless parentheses.
-./src/test/java/dev/coms4156/project/RouteControllerTest.java:153:	UselessParentheses:	Useless parentheses.

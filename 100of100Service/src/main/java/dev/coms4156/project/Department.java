@@ -3,6 +3,7 @@ package dev.coms4156.project;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -104,7 +105,7 @@ public class Department extends OrganizationComposite {
     for (Employee e : this.employees) {
       String position = e.getPosition();
       position = (position == null || position.trim().isEmpty())
-          ? "unassigned" : position.trim().toLowerCase();
+          ? "unassigned" : position.trim().toLowerCase(Locale.getDefault());
       result.put(position, result.getOrDefault(position, 0) + 1);
     }
     return result;

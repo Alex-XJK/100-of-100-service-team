@@ -14,7 +14,7 @@ import java.util.List;
  * This class is responsible for creating and managing the connection to the database.
  * Designed under the Singleton Design Pattern.
  */
-public class MysqlConnection implements DatabaseConnection {
+public final class MysqlConnection implements DatabaseConnection {
   private static volatile MysqlConnection instance;
   private Connection connection;
 

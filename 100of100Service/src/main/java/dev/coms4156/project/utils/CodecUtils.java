@@ -5,7 +5,7 @@ import java.util.Base64;
 /**
  * This class provides utility methods for encoding and decoding strings.
  */
-public class CodecUtils {
+public final class CodecUtils {
   /**
    * Private constructor to prevent instantiation.
    */
