@@ -79,19 +79,19 @@ public class RealRouteControllerTest {
 
     JSONObject response = parseResponse(result);
     Assertions.assertEquals(1, response.getInt("id"));
-    JSONArray departments_id = response.getJSONArray("departments_id");
-    Assertions.assertTrue(departments_id.length() > 0);
+    JSONArray departmentsId = response.getJSONArray("departments_id");
+    Assertions.assertTrue(departmentsId.length() > 0);
     JSONArray departments = response.getJSONArray("departments");
-    Assertions.assertEquals(departments_id.length(), departments.length());
-    for (int i = 0; i < departments_id.length(); i++) {
+    Assertions.assertEquals(departmentsId.length(), departments.length());
+    for (int i = 0; i < departmentsId.length(); i++) {
       JSONObject department = departments.getJSONObject(i);
-      Assertions.assertEquals(departments_id.getInt(i), department.getInt("id"));
+      Assertions.assertEquals(departmentsId.getInt(i), department.getInt("id"));
       System.out.println(
-          departments_id.getInt(i) + ": " +
+          departmentsId.getInt(i) + ": " +
               department.getInt("id") + " --> " +
               department.getString("name")
       );
-      org_1_depts.put(departments_id.getInt(i), department.getString("name"));
+      org_1_depts.put(departmentsId.getInt(i), department.getString("name"));
     }
 
     Assumptions.assumeTrue(!org_1_depts.isEmpty());
