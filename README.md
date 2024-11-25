@@ -345,6 +345,20 @@ mvn checkstyle:check
 One of the latest checkstyle report is located at `./checkstyle.out` file.
 ![CheckStyle Report](./checkstyle.png)
 
+### Static Analysis
+We use PMD to perform static analysis on our code. To generate the static analysis report, you need to install the PMD tool as documented in I1. Then
+run the following command:
+```bash
+pmd check -d . -R rulesets/java/quickstart.xml -f text
+```
+The static analysis report is located at `./pmdcheck.out` file. We have solved amost all the static bugs found by PMD, but there are still some static bugs remaining. According to the assignment requirements,
+> If static bugs remain at the time of submission you must document these and explain why they remain.
+
+We document the reasons for the remaining static bugs here:
+1. **AvoidUsingVolatile**: [category/java/multithreading/AvoidUsingVolatile](https://docs.pmd-code.org/latest/pmd_rules_java_multithreading.html#avoidusingvolatile) - According to the PMD description, the use of volatile is discouraged because it is difficult to use correctly, and requires a good expertise of the Java Memory Model. However, we consulted both the official publication (Freeman 179) and the professor recommended website, refactoring.guru, and found that the use of volatile is a good way to ensure the multi-threading safety of the singleton pattern and follows the "double-checked locking" mechanism. Therefore, we decided to keep the volatile keyword in our singleton pattern implementation.
+2. **UseUtilityClass**: [category/java/design/UseUtilityClass](https://docs.pmd-code.org/latest/pmd_rules_java_design.html#useutilityclass) - We understand the PMD rule suggests that utility classes should be final and have a private constructor to prevent instantiation. However, in our case, `ServiceApplication` class is a Springboot special class that is used to start the Springboot application. It is not a utility class. If it is made non-instantiable, the Springboot will reports "IllegalState ApplicationContext failure" error. Therefore, we decided to keep the ServiceApplication class as it is.
+3. **UnusedPrivateMethod**: [category/java/bestpractices/UnusedPrivateMethod](https://docs.pmd-code.org/latest/pmd_rules_java_bestpractices.html#unusedprivatemethod) - This is false positive. After checking the code, we confirmed that the methods are used in the project, but PMD does not recognize it. For example, the `errorResponse()` was used in `handleItemNotFoundException()`, `handleForbiddenException()` and etc. The `throwBadRequestException()` was used in `testBadRequestException()`. The `throwForbiddenException()` was used in `testForbiddenException()`, and so on.
+
 ### Branch Coverage Report
 We use JaCoCo Maven plugin to generate the branch coverage report. To generate the report, first make sure you have run the test suite. Then run the following command:
 ```bash
