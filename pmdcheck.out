@@ -1,24 +1,21 @@
-./src/main/java/dev/coms4156/project/HrDatabaseFacade.java:362:	GuardLogStatement:	Logger calls should be surrounded by log level guards.
 ./src/main/java/dev/coms4156/project/InmemConnection.java:13:	AvoidUsingVolatile:	Use of modifier volatile is not recommended.
 ./src/main/java/dev/coms4156/project/MysqlConnection.java:18:	AvoidUsingVolatile:	Use of modifier volatile is not recommended.
-./src/main/java/dev/coms4156/project/MysqlConnection.java:35:	PreserveStackTrace:	Thrown exception does not preserve the stack trace of exception 'e' on all code paths
-./src/main/java/dev/coms4156/project/MysqlConnection.java:53:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:86:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:113:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:146:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:185:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:212:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:254:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:316:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:452:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:479:	UnnecessaryLocalBeforeReturn:	Consider simply returning the value vs storing it in local variable 'newDept'
-./src/main/java/dev/coms4156/project/MysqlConnection.java:529:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
-./src/main/java/dev/coms4156/project/MysqlConnection.java:554:	UnnecessaryLocalBeforeReturn:	Consider simply returning the value vs storing it in local variable 'newOrg'
-./src/main/java/dev/coms4156/project/RouteController.java:334:	LiteralsFirstInComparisons:	Position literals first in String comparisons
+./src/main/java/dev/coms4156/project/MysqlConnection.java:54:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:87:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:114:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:147:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:186:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:213:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:255:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:317:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:453:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:480:	UnnecessaryLocalBeforeReturn:	Consider simply returning the value vs storing it in local variable 'newDept'
+./src/main/java/dev/coms4156/project/MysqlConnection.java:530:	CloseResource:	Ensure that resources like this ResultSet object are closed after use
+./src/main/java/dev/coms4156/project/MysqlConnection.java:555:	UnnecessaryLocalBeforeReturn:	Consider simply returning the value vs storing it in local variable 'newOrg'
 ./src/main/java/dev/coms4156/project/ServiceApplication.java:10:	UseUtilityClass:	This utility class has a non-private constructor
 ./src/main/java/dev/coms4156/project/exception/GlobalExceptionHandler.java:25:	UnusedPrivateMethod:	Avoid unused private methods such as 'errorResponse(Exception)'.
-./src/main/java/dev/coms4156/project/interceptor/ParameterDecodingInterceptor.java:42:	PreserveStackTrace:	Thrown exception does not preserve the stack trace of exception 'e' on all code paths
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:17:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwBadRequestException()'.
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:25:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwForbiddenException()'.
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:33:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwInternalServerErrorException()'.
 ./src/test/java/dev/coms4156/project/ExceptionTest.java:41:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwNotFoundException()'.
+./src/test/java/dev/coms4156/project/RealRouteControllerTest.java:82:	LocalVariableNamingConventions:	The local variable name 'departments_id' doesn't match '[a-z][a-zA-Z0-9]*'

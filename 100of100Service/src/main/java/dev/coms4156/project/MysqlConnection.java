@@ -32,7 +32,8 @@ public final class MysqlConnection implements DatabaseConnection {
       this.connection = DriverManager.getConnection(url, user, password);
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new InternalServerErrorException("Failed to connect to the database.");
+      throw (InternalServerErrorException)
+          new InternalServerErrorException("Failed to connect to the database.").initCause(e);
     }
   }
 

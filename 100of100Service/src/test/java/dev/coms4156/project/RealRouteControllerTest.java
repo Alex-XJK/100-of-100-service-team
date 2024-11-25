@@ -1,9 +1,14 @@
 package dev.coms4156.project;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class RealRouteControllerTest {
 
-  private final String base64_1 = "MQ";
-  private final String base64_9999 = "OTk5OQ";
+  private static final String base64_1 = "MQ";
+  private static final String base64_9999 = "OTk5OQ";
 
   @Autowired
   private MockMvc mockMvc;

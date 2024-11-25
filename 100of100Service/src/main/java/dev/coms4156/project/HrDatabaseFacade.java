@@ -359,6 +359,8 @@ public final class HrDatabaseFacade {
    */
   public static void setConnection(DatabaseConnection databaseConnection) {
     dbConnection = databaseConnection;
-    logger.info("Database connection is set to: {}", dbConnection.connectionName());
+    if (logger.isInfoEnabled()) {
+      logger.info("Database connection is set to: {}", dbConnection.connectionName());
+    }
   }
 }

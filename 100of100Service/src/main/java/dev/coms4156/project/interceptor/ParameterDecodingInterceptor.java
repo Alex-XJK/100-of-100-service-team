@@ -39,7 +39,8 @@ public class ParameterDecodingInterceptor implements HandlerInterceptor {
       decodedCid = CodecUtils.decode(originalCid);
     } catch (IllegalArgumentException e) {
       logger.warn("Failed to decode [{}].", originalCid);
-      throw new BadRequestException("Invalid client ID [" + originalCid + "]");
+      throw (BadRequestException)
+          new BadRequestException("Invalid client ID [" + originalCid + "]").initCause(e);
     }
     request.setAttribute(CLIENT_ID, decodedCid);
     logger.info("Decode client id from [{}] to [{}].", originalCid, decodedCid);
