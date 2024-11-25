@@ -5,7 +5,6 @@ import dev.coms4156.project.command.Command;
 import dev.coms4156.project.command.GetDeptInfoCmd;
 import dev.coms4156.project.command.GetEmpInfoCmd;
 import dev.coms4156.project.command.GetOrgInfoCmd;
-import dev.coms4156.project.command.RegisterCmd;
 import dev.coms4156.project.command.RemoveEmpFromDeptCmd;
 import dev.coms4156.project.command.SetDeptHeadCmd;
 import dev.coms4156.project.command.SetEmpPerfCmd;
@@ -288,54 +287,6 @@ public class RouteController {
         clientId, departmentId, name, hireDate, position, salary, performance
     );
     return new ResponseEntity<>(command.execute(), HttpStatus.CREATED);
-  }
-
-  /**
-   * Login as a client by validating the client ID.
-   * Notice: No associated command for this method.
-   *
-   * @param clientId the client ID
-   * @return a success message if the client ID is valid,
-   *        or throws a 401 exception if the operation fails
-   */
-  @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> login(
-      @RequestParam("cid") String clientId
-  ) {
-    Map<String, String> response = new HashMap<>();
-    try {
-      int cid = Integer.parseInt(CodecUtils.decode(clientId));
-      Command command = new GetOrgInfoCmd(cid);
-      Map<String, Object> orgResponse = (Map<String, Object>) command.execute();
-      String orgName = (String) orgResponse.get("name");
-      response.put("status", "success");
-      response.put("message", "Logged in as " + orgName);
-      return new ResponseEntity<>(response, HttpStatus.OK);
-    } catch (NotFoundException | IllegalArgumentException e) {
-      response.put("status", "failed");
-      response.put("message", "Invalid client ID");
-      return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
-    }
-  }
-
-  /**
-   * Register a new client, namely to create a new organization.
-   *
-   * @param name the name of the organization
-   * @return a success message and client ID if the organization is successfully created,
-   *        or a failure message if the operation fails.
-   */
-  @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<?> register(
-      @RequestParam("name") String name
-  ) {
-    Command command = new RegisterCmd(name);
-    Map<String, String> response = (Map<String, String>) command.execute();
-    if (response.get("status").equals("success")) {
-      return new ResponseEntity<>(response, HttpStatus.CREATED);
-    } else {
-      return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
   }
 
   /* ***** DELETE METHODS ***** */

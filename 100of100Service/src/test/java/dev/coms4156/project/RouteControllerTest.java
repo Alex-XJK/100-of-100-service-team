@@ -419,39 +419,6 @@ public class RouteControllerTest {
     Assertions.assertEquals(expected, content);
   }
 
-  @Test
-  public void testLogin() throws Exception {
-    // For successful login
-    mockMvc.perform(post("/login")
-        .param("cid", CLIENT_ID_1)
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isOk()).andReturn();
 
-    // For not existing client
-    mockMvc.perform(post("/login")
-        .param("cid", CLIENT_ID_99)
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnauthorized()).andReturn();
-
-    // For not understandable client
-    mockMvc.perform(post("/login")
-        .param("cid", "AdvSE")
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isUnauthorized()).andReturn();
-
-  }
-
-  @Test
-  public void testRegister() throws Exception {
-    // For successful registration
-    MvcResult mvcResultPost = mockMvc.perform(post("/register")
-        .param("name", "AdvSE")
-        .accept(MediaType.APPLICATION_JSON))
-        .andExpect(status().isCreated()).andReturn();
-
-    String content = mvcResultPost.getResponse().getContentAsString();
-    Assertions.assertTrue(content.contains("token"));
-    System.out.println(content);
-  }
 
 }
