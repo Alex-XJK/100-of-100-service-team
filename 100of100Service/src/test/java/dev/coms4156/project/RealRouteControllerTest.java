@@ -1,5 +1,12 @@
 package dev.coms4156.project;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Assertions;
@@ -17,15 +24,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 
 /**
  * Test the RouteController class with the real database connection.
@@ -87,9 +85,9 @@ public class RealRouteControllerTest {
       JSONObject department = departments.getJSONObject(i);
       Assertions.assertEquals(departmentsId.getInt(i), department.getInt("id"));
       System.out.println(
-          departmentsId.getInt(i) + ": " +
-              department.getInt("id") + " --> " +
-              department.getString("name")
+          departmentsId.getInt(i) + ": "
+              + department.getInt("id") + " --> "
+              + department.getString("name")
       );
       org_1_depts.put(departmentsId.getInt(i), department.getString("name"));
     }
@@ -150,9 +148,9 @@ public class RealRouteControllerTest {
         JSONObject employee = employees.getJSONObject(i);
         org_1_employees.add(employee.getInt("id"));
         System.out.println(
-            "Dept " + entry.getKey() + ": Employee " +
-                employee.getInt("id") + " --> " +
-                employee.getString("name")
+            "Dept " + entry.getKey() + ": Employee "
+                + employee.getInt("id") + " --> "
+                + employee.getString("name")
         );
       }
     }
@@ -174,20 +172,20 @@ public class RealRouteControllerTest {
   @Execution(ExecutionMode.CONCURRENT)
   @Order(10)
   public void testGetEmployeeSuccess() throws Exception {
-    for (int employee_id : org_1_employees) {
+    for (int employeeId : org_1_employees) {
       MvcResult result = mockMvc.perform(get("/getEmpInfo")
               .param("cid", base64_1)
-              .param("eid", String.valueOf(employee_id))
+              .param("eid", String.valueOf(employeeId))
               .accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andReturn();
 
       JSONObject response = parseResponse(result);
-      Assertions.assertEquals(employee_id, response.getInt("ID"));
+      Assertions.assertEquals(employeeId, response.getInt("ID"));
       System.out.println(
-          "Employee " + employee_id + ": " +
-              response.getString("name") + " hired on " +
-              response.getString("hireDate")
+          "Employee " + employeeId + ": "
+              + response.getString("name") + " hired on "
+              + response.getString("hireDate")
       );
     }
   }

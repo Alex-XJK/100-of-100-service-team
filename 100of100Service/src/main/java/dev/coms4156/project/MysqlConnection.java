@@ -87,7 +87,8 @@ public final class MysqlConnection implements DatabaseConnection {
       pstmt.setInt(2, internalDepartmentId);
       try (ResultSet rs = pstmt.executeQuery()) {
         if (rs.next()) {
-          List<Employee> employees = getEmployeesForDepartment(internalDepartmentId, organizationId);
+          List<Employee> employees =
+              getEmployeesForDepartment(internalDepartmentId, organizationId);
           return new Department(
               externalDepartmentId,
               rs.getString("name"),
