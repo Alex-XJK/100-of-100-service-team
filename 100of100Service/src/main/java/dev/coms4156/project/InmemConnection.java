@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Provides in-memory data for testing purposes without connecting to a real database.
  */
-public class InmemConnection implements DatabaseConnection {
+public final class InmemConnection implements DatabaseConnection {
   private static volatile InmemConnection instance;
 
   private final Map<Integer, List<Employee>> testEmployees = new HashMap<>();

@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
  * This class is responsible for creating and managing the connection to the HR database.
  * Designed under the Singleton Design Pattern.
  */
-public class HrDatabaseFacade {
+public final class HrDatabaseFacade {
   private static final Logger logger = LoggerFactory.getLogger(HrDatabaseFacade.class);
   private static final Map<Integer, HrDatabaseFacade> instances = new HashMap<>();
   private static DatabaseConnection dbConnection = null;
@@ -359,6 +359,8 @@ public class HrDatabaseFacade {
    */
   public static void setConnection(DatabaseConnection databaseConnection) {
     dbConnection = databaseConnection;
-    logger.info("Database connection is set to: {}", dbConnection.connectionName());
+    if (logger.isInfoEnabled()) {
+      logger.info("Database connection is set to: {}", dbConnection.connectionName());
+    }
   }
 }

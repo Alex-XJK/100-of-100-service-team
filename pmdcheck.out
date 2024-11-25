@@ -1,0 +1,8 @@
+./src/main/java/dev/coms4156/project/InmemConnection.java:13:	AvoidUsingVolatile:	Use of modifier volatile is not recommended.
+./src/main/java/dev/coms4156/project/MysqlConnection.java:18:	AvoidUsingVolatile:	Use of modifier volatile is not recommended.
+./src/main/java/dev/coms4156/project/ServiceApplication.java:10:	UseUtilityClass:	This utility class has a non-private constructor
+./src/main/java/dev/coms4156/project/exception/GlobalExceptionHandler.java:25:	UnusedPrivateMethod:	Avoid unused private methods such as 'errorResponse(Exception)'.
+./src/test/java/dev/coms4156/project/ExceptionTest.java:17:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwBadRequestException()'.
+./src/test/java/dev/coms4156/project/ExceptionTest.java:25:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwForbiddenException()'.
+./src/test/java/dev/coms4156/project/ExceptionTest.java:33:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwInternalServerErrorException()'.
+./src/test/java/dev/coms4156/project/ExceptionTest.java:41:	UnusedPrivateMethod:	Avoid unused private methods such as 'throwNotFoundException()'.

@@ -149,8 +149,8 @@ public class RouteControllerTest {
 
     String content = mvcResult.getResponse().getContentAsString();
     // Should contain "John Doe", not "Alice Johnson"
-    assert (content.contains("John Doe"));
-    assert (!content.contains("Alice Johnson"));
+    assert content.contains("John Doe");
+    assert !content.contains("Alice Johnson");
   }
 
   // Test: Accessing a non-existent employee returns an error

@@ -1,9 +1,21 @@
 package dev.coms4156.project;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-
 /**
  * Test the RouteController class with the real database connection.
  */
@@ -30,8 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 public class RealRouteControllerTest {
 
-  private final String base64_1 = "MQ";
-  private final String base64_9999 = "OTk5OQ";
+  private static final String base64_1 = "MQ";
+  private static final String base64_9999 = "OTk5OQ";
 
   @Autowired
   private MockMvc mockMvc;
@@ -74,19 +77,19 @@ public class RealRouteControllerTest {
 
     JSONObject response = parseResponse(result);
     Assertions.assertEquals(1, response.getInt("id"));
-    JSONArray departments_id = response.getJSONArray("departments_id");
-    Assertions.assertTrue(departments_id.length() > 0);
+    JSONArray departmentsId = response.getJSONArray("departments_id");
+    Assertions.assertTrue(departmentsId.length() > 0);
     JSONArray departments = response.getJSONArray("departments");
-    Assertions.assertEquals(departments_id.length(), departments.length());
-    for (int i = 0; i < departments_id.length(); i++) {
+    Assertions.assertEquals(departmentsId.length(), departments.length());
+    for (int i = 0; i < departmentsId.length(); i++) {
       JSONObject department = departments.getJSONObject(i);
-      Assertions.assertEquals(departments_id.getInt(i), department.getInt("id"));
+      Assertions.assertEquals(departmentsId.getInt(i), department.getInt("id"));
       System.out.println(
-          departments_id.getInt(i) + ": " +
-              department.getInt("id") + " --> " +
-              department.getString("name")
+          departmentsId.getInt(i) + ": "
+              + department.getInt("id") + " --> "
+              + department.getString("name")
       );
-      org_1_depts.put(departments_id.getInt(i), department.getString("name"));
+      org_1_depts.put(departmentsId.getInt(i), department.getString("name"));
     }
 
     Assumptions.assumeTrue(!org_1_depts.isEmpty());
@@ -145,9 +148,9 @@ public class RealRouteControllerTest {
         JSONObject employee = employees.getJSONObject(i);
         org_1_employees.add(employee.getInt("id"));
         System.out.println(
-            "Dept " + entry.getKey() + ": Employee " +
-                employee.getInt("id") + " --> " +
-                employee.getString("name")
+            "Dept " + entry.getKey() + ": Employee "
+                + employee.getInt("id") + " --> "
+                + employee.getString("name")
         );
       }
     }
@@ -169,20 +172,20 @@ public class RealRouteControllerTest {
   @Execution(ExecutionMode.CONCURRENT)
   @Order(10)
   public void testGetEmployeeSuccess() throws Exception {
-    for (int employee_id : org_1_employees) {
+    for (int employeeId : org_1_employees) {
       MvcResult result = mockMvc.perform(get("/getEmpInfo")
               .param("cid", base64_1)
-              .param("eid", String.valueOf(employee_id))
+              .param("eid", String.valueOf(employeeId))
               .accept(MediaType.APPLICATION_JSON))
           .andExpect(status().isOk())
           .andReturn();
 
       JSONObject response = parseResponse(result);
-      Assertions.assertEquals(employee_id, response.getInt("ID"));
+      Assertions.assertEquals(employeeId, response.getInt("ID"));
       System.out.println(
-          "Employee " + employee_id + ": " +
-              response.getString("name") + " hired on " +
-              response.getString("hireDate")
+          "Employee " + employeeId + ": "
+              + response.getString("name") + " hired on "
+              + response.getString("hireDate")
       );
     }
   }

@@ -14,7 +14,7 @@ import java.util.List;
  * This class is responsible for creating and managing the connection to the database.
  * Designed under the Singleton Design Pattern.
  */
-public class MysqlConnection implements DatabaseConnection {
+public final class MysqlConnection implements DatabaseConnection {
   private static volatile MysqlConnection instance;
   private Connection connection;
 
@@ -33,7 +33,8 @@ public class MysqlConnection implements DatabaseConnection {
       this.connection = DriverManager.getConnection(url, user, password);
     } catch (SQLException e) {
       e.printStackTrace();
-      throw new InternalServerErrorException("Failed to connect to the database.");
+      throw (InternalServerErrorException)
+          new InternalServerErrorException("Failed to connect to the database.").initCause(e);
     }
   }
 
@@ -51,18 +52,19 @@ public class MysqlConnection implements DatabaseConnection {
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, organizationId);
       pstmt.setInt(2, internalEmployeeId);
-      ResultSet rs = pstmt.executeQuery();
-      if (rs.next()) {
-        Employee employee = new Employee(
-                externalEmployeeId,
-                rs.getString("name"),
-                rs.getDate("hire_date")
-        );
-        // Set additional employee information
-        employee.setPosition(rs.getString("position"));
-        employee.setSalary(rs.getDouble("salary"));
-        employee.setPerformance(rs.getDouble("performance"));
-        return employee;
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          Employee employee = new Employee(
+              externalEmployeeId,
+              rs.getString("name"),
+              rs.getDate("hire_date")
+          );
+          // Set additional employee information
+          employee.setPosition(rs.getString("position"));
+          employee.setSalary(rs.getDouble("salary"));
+          employee.setPerformance(rs.getDouble("performance"));
+          return employee;
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -84,14 +86,16 @@ public class MysqlConnection implements DatabaseConnection {
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, organizationId);
       pstmt.setInt(2, internalDepartmentId);
-      ResultSet rs = pstmt.executeQuery();
-      if (rs.next()) {
-        List<Employee> employees = getEmployeesForDepartment(internalDepartmentId, organizationId);
-        return new Department(
-                externalDepartmentId,
-                rs.getString("name"),
-                employees
-        );
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          List<Employee> employees =
+              getEmployeesForDepartment(internalDepartmentId, organizationId);
+          return new Department(
+              externalDepartmentId,
+              rs.getString("name"),
+              employees
+          );
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -111,20 +115,21 @@ public class MysqlConnection implements DatabaseConnection {
     String query = "SELECT * FROM employees WHERE organization_id = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, organizationId);
-      ResultSet rs = pstmt.executeQuery();
-      while (rs.next()) {
-        int internalId = rs.getInt("employee_id");
-        int externalId = internalId % 10000;
-        Employee employee = new Employee(
-                externalId,
-                rs.getString("name"),
-                rs.getDate("hire_date")
-        );
-        // Set additional employee information
-        employee.setPosition(rs.getString("position"));
-        employee.setSalary(rs.getDouble("salary"));
-        employee.setPerformance(rs.getDouble("performance"));
-        employees.add(employee);
+      try (ResultSet rs = pstmt.executeQuery()) {
+        while (rs.next()) {
+          int internalId = rs.getInt("employee_id");
+          int externalId = internalId % 10000;
+          Employee employee = new Employee(
+              externalId,
+              rs.getString("name"),
+              rs.getDate("hire_date")
+          );
+          // Set additional employee information
+          employee.setPosition(rs.getString("position"));
+          employee.setSalary(rs.getDouble("salary"));
+          employee.setPerformance(rs.getDouble("performance"));
+          employees.add(employee);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -144,27 +149,28 @@ public class MysqlConnection implements DatabaseConnection {
     String query = "SELECT * FROM departments WHERE organization_id = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, organizationId);
-      ResultSet rs = pstmt.executeQuery();
-      while (rs.next()) {
-        int internalId = rs.getInt("department_id");
-        int externalId = internalId % 10000;
-        List<Employee> employees = getEmployeesForDepartment(internalId, organizationId);
-        Department department = new Department(
-                externalId,
-                rs.getString("name"),
-                employees
-        );
+      try (ResultSet rs = pstmt.executeQuery()) {
+        while (rs.next()) {
+          int internalId = rs.getInt("department_id");
+          int externalId = internalId % 10000;
+          List<Employee> employees = getEmployeesForDepartment(internalId, organizationId);
+          Department department = new Department(
+              externalId,
+              rs.getString("name"),
+              employees
+          );
 
-        // Get and set head if exists
-        Integer headEmployeeId = rs.getInt("head_employee_id");
-        if (!rs.wasNull()) {
-          Employee head = getEmployee(organizationId, headEmployeeId % 10000);
-          if (head != null) {
-            department.setHead(head);
+          // Get and set head if exists
+          Integer headEmployeeId = rs.getInt("head_employee_id");
+          if (!rs.wasNull()) {
+            Employee head = getEmployee(organizationId, headEmployeeId % 10000);
+            if (head != null) {
+              department.setHead(head);
+            }
           }
-        }
 
-        departments.add(department);
+          departments.add(department);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -183,12 +189,13 @@ public class MysqlConnection implements DatabaseConnection {
     String query = "SELECT * FROM organizations WHERE organization_id = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, organizationId);
-      ResultSet rs = pstmt.executeQuery();
-      if (rs.next()) {
-        return new Organization(
-                rs.getInt("organization_id"),
-                rs.getString("name")
-        );
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          return new Organization(
+              rs.getInt("organization_id"),
+              rs.getString("name")
+          );
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -210,21 +217,21 @@ public class MysqlConnection implements DatabaseConnection {
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
       pstmt.setInt(1, internalDepartmentId);
       pstmt.setInt(2, organizationId);
-      ResultSet rs = pstmt.executeQuery();
-
-      while (rs.next()) {
-        int internalId = rs.getInt("employee_id");
-        int externalId = internalId % 10000;
-        Employee employee = new Employee(
-                externalId,
-                rs.getString("name"),
-                rs.getDate("hire_date")
-        );
-        // Set additional employee information
-        employee.setPosition(rs.getString("position"));
-        employee.setSalary(rs.getDouble("salary"));
-        employee.setPerformance(rs.getDouble("performance"));
-        employees.add(employee);
+      try (ResultSet rs = pstmt.executeQuery()) {
+        while (rs.next()) {
+          int internalId = rs.getInt("employee_id");
+          int externalId = internalId % 10000;
+          Employee employee = new Employee(
+              externalId,
+              rs.getString("name"),
+              rs.getDate("hire_date")
+          );
+          // Set additional employee information
+          employee.setPosition(rs.getString("position"));
+          employee.setSalary(rs.getDouble("salary"));
+          employee.setPerformance(rs.getDouble("performance"));
+          employees.add(employee);
+        }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -252,16 +259,17 @@ public class MysqlConnection implements DatabaseConnection {
 
     try (PreparedStatement pstmt = connection.prepareStatement(maxIdQuery)) {
       pstmt.setInt(1, organizationId);
-      ResultSet rs = pstmt.executeQuery();
-      if (rs.next()) {
-        int maxId = rs.getInt("max_id");
-        if (rs.wasNull()) {
-          newEmployeeId = organizationId * 10000 + 1;
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          int maxId = rs.getInt("max_id");
+          if (rs.wasNull()) {
+            newEmployeeId = organizationId * 10000 + 1;
+          } else {
+            newEmployeeId = maxId + 1;
+          }
         } else {
-          newEmployeeId = maxId + 1;
+          newEmployeeId = organizationId * 10000 + 1;
         }
-      } else {
-        newEmployeeId = organizationId * 10000 + 1;
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -314,15 +322,16 @@ public class MysqlConnection implements DatabaseConnection {
       checkStmt.setInt(1, departmentId);
       checkStmt.setInt(2, organizationId);
 
-      ResultSet rs = checkStmt.executeQuery();
-      if (rs.next() && rs.getInt("head_employee_id") == employeeId) {
-        String updateHeadQuery =
-                "UPDATE departments SET head_employee_id = NULL "
-                        + "WHERE department_id = ? AND organization_id = ?";
-        try (PreparedStatement updateStmt = connection.prepareStatement(updateHeadQuery)) {
-          updateStmt.setInt(1, departmentId);
-          updateStmt.setInt(2, organizationId);
-          updateStmt.executeUpdate();
+      try (ResultSet rs = checkStmt.executeQuery()) {
+        if (rs.next() && rs.getInt("head_employee_id") == employeeId) {
+          String updateHeadQuery =
+              "UPDATE departments SET head_employee_id = NULL "
+                  + "WHERE department_id = ? AND organization_id = ?";
+          try (PreparedStatement updateStmt = connection.prepareStatement(updateHeadQuery)) {
+            updateStmt.setInt(1, departmentId);
+            updateStmt.setInt(2, organizationId);
+            updateStmt.executeUpdate();
+          }
         }
       }
     } catch (SQLException e) {
@@ -450,16 +459,17 @@ public class MysqlConnection implements DatabaseConnection {
 
     try (PreparedStatement pstmt = connection.prepareStatement(maxIdQuery)) {
       pstmt.setInt(1, organizationId);
-      ResultSet rs = pstmt.executeQuery();
-      if (rs.next()) {
-        int maxId = rs.getInt("max_id");
-        if (rs.wasNull()) {
-          newDepartmentId = organizationId * 10000 + 1;
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          int maxId = rs.getInt("max_id");
+          if (rs.wasNull()) {
+            newDepartmentId = organizationId * 10000 + 1;
+          } else {
+            newDepartmentId = maxId + 1;
+          }
         } else {
-          newDepartmentId = maxId + 1;
+          newDepartmentId = organizationId * 10000 + 1;
         }
-      } else {
-        newDepartmentId = organizationId * 10000 + 1;
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -477,9 +487,7 @@ public class MysqlConnection implements DatabaseConnection {
       int rowsAffected = pstmt.executeUpdate();
       if (rowsAffected > 0) {
         int externalDeptId = newDepartmentId % 10000;
-        Department newDept =
-            new Department(externalDeptId, department.getName(), new ArrayList<>());
-        return newDept;
+        return new Department(externalDeptId, department.getName(), new ArrayList<>());
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -527,16 +535,17 @@ public class MysqlConnection implements DatabaseConnection {
     int newOrganizationId;
 
     try (PreparedStatement pstmt = connection.prepareStatement(maxIdQuery)) {
-      ResultSet rs = pstmt.executeQuery();
-      if (rs.next()) {
-        int maxId = rs.getInt("max_id");
-        if (rs.wasNull()) {
-          newOrganizationId = 1;
+      try (ResultSet rs = pstmt.executeQuery()) {
+        if (rs.next()) {
+          int maxId = rs.getInt("max_id");
+          if (rs.wasNull()) {
+            newOrganizationId = 1;
+          } else {
+            newOrganizationId = maxId + 1;
+          }
         } else {
-          newOrganizationId = maxId + 1;
+          newOrganizationId = 1;
         }
-      } else {
-        newOrganizationId = 1;
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -552,8 +561,7 @@ public class MysqlConnection implements DatabaseConnection {
 
       int rowsAffected = pstmt.executeUpdate();
       if (rowsAffected > 0) {
-        Organization newOrg = new Organization(newOrganizationId, organization.getName());
-        return newOrg;
+        return new Organization(newOrganizationId, organization.getName());
       }
     } catch (SQLException e) {
       e.printStackTrace();
