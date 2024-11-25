@@ -128,8 +128,8 @@ public class Department extends OrganizationComposite {
     }
 
     double totalSalary = 0.0;
-    double highestSalary = Double.MIN_VALUE;
-    double lowestSalary = Double.MAX_VALUE;
+    double highestSalary = Double.NEGATIVE_INFINITY;
+    double lowestSalary = Double.POSITIVE_INFINITY;
     Employee highestEmployee = null;
     Employee lowestEmployee = null;
 
