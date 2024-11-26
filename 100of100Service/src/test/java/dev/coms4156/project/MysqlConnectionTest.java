@@ -1,17 +1,24 @@
 package dev.coms4156.project;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import dev.coms4156.project.exception.InternalServerErrorException;
-
 import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,9 +45,11 @@ public class MysqlConnectionTest {
     }
   }
 
+  /**
+   * Tears down the test environment by clearing the (real) DatabaseConnection instance.
+   */
   @AfterEach
   public void tearDown() throws Exception {
-    // Clear any system properties set during tests
     System.clearProperty("db.url");
     System.clearProperty("db.user");
     System.clearProperty("db.password");
@@ -49,6 +58,11 @@ public class MysqlConnectionTest {
     resetMysqlConnectionInstance();
   }
 
+  /**
+   * Resets the MysqlConnection singleton instance using reflection.
+   *
+   * @throws Exception if reflection fails
+   */
   private void resetMysqlConnectionInstance() throws Exception {
     Field instanceField = MysqlConnection.class.getDeclaredField("instance");
     instanceField.setAccessible(true);
@@ -80,7 +94,8 @@ public class MysqlConnectionTest {
   public void testGetEmployeesForNonexistentOrganization() {
     List<Employee> employees = realConnection.getEmployees(-1);
     assertNotNull(employees, "Employees list should not be null");
-    assertTrue(employees.isEmpty(), "Employees list should be empty for nonexistent organization");
+    assertTrue(employees.isEmpty(),
+        "Employees list should be empty for nonexistent organization");
   }
 
   @Test
@@ -111,7 +126,8 @@ public class MysqlConnectionTest {
   public void testGetDepartmentsForNonexistentOrganization() {
     List<Department> departments = realConnection.getDepartments(-1);
     assertNotNull(departments, "Departments list should not be null");
-    assertTrue(departments.isEmpty(), "Departments list should be empty for nonexistent organization");
+    assertTrue(departments.isEmpty(),
+        "Departments list should be empty for nonexistent organization");
   }
 
   @Test
@@ -143,7 +159,11 @@ public class MysqlConnectionTest {
     int departmentId = departments.get(0).getId();
     int internalDeptId = testOrganizationId * 10000 + departmentId;
 
-    int newEmployeeId = realConnection.addEmployeeToDepartment(testOrganizationId, internalDeptId, newEmployee);
+    int newEmployeeId = realConnection.addEmployeeToDepartment(
+        testOrganizationId,
+        internalDeptId,
+        newEmployee
+    );
     assertTrue(newEmployeeId > 0, "New employee ID should be positive");
 
     // Verify the employee was added
@@ -152,7 +172,11 @@ public class MysqlConnectionTest {
     assertEquals("Test Employee", addedEmployee.getName(), "Employee name should match");
 
     // Cleanup: Remove the added employee
-    boolean removed = realConnection.removeEmployeeFromDepartment(testOrganizationId, internalDeptId, newEmployeeId);
+    boolean removed = realConnection.removeEmployeeFromDepartment(
+        testOrganizationId,
+        internalDeptId,
+        newEmployeeId
+    );
     assertTrue(removed, "Employee should be removed successfully");
   }
 
@@ -160,7 +184,11 @@ public class MysqlConnectionTest {
   public void testAddEmployeeToNonexistentDepartment() {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     int nonExistentDeptId = -1;
-    int newEmployeeId = realConnection.addEmployeeToDepartment(testOrganizationId, nonExistentDeptId, newEmployee);
+    int newEmployeeId = realConnection.addEmployeeToDepartment(
+        testOrganizationId,
+        nonExistentDeptId,
+        newEmployee
+    );
     assertEquals(-1, newEmployeeId, "Should return -1 when adding to a nonexistent department");
   }
 
@@ -177,15 +205,26 @@ public class MysqlConnectionTest {
     int departmentId = departments.get(0).getId();
     int internalDeptId = testOrganizationId * 10000 + departmentId;
 
-    int newEmployeeId = realConnection.addEmployeeToDepartment(testOrganizationId, internalDeptId, newEmployee);
+    int newEmployeeId = realConnection.addEmployeeToDepartment(
+        testOrganizationId,
+        internalDeptId,
+        newEmployee
+    );
     assertTrue(newEmployeeId > 0, "New employee ID should be positive");
 
     // Now, remove the employee
-    boolean removed = realConnection.removeEmployeeFromDepartment(testOrganizationId, internalDeptId, newEmployeeId);
+    boolean removed = realConnection.removeEmployeeFromDepartment(
+        testOrganizationId,
+        internalDeptId,
+        newEmployeeId
+    );
     assertTrue(removed, "Employee should be removed successfully");
 
     // Verify the employee was removed
-    Employee removedEmployee = realConnection.getEmployee(testOrganizationId, newEmployeeId % 10000);
+    Employee removedEmployee = realConnection.getEmployee(
+        testOrganizationId,
+        newEmployeeId % 10000
+    );
     assertNull(removedEmployee, "Employee should be null after removal");
   }
 
@@ -197,7 +236,11 @@ public class MysqlConnectionTest {
     int internalDeptId = testOrganizationId * 10000 + departmentId;
     int nonExistentEmployeeId = -1;
 
-    boolean removed = realConnection.removeEmployeeFromDepartment(testOrganizationId, internalDeptId, nonExistentEmployeeId);
+    boolean removed = realConnection.removeEmployeeFromDepartment(
+        testOrganizationId,
+        internalDeptId,
+        nonExistentEmployeeId
+    );
     assertFalse(removed, "Removing a nonexistent employee should return false");
   }
 
@@ -207,8 +250,7 @@ public class MysqlConnectionTest {
     assumeTrue(!employees.isEmpty(), "No employees found in the organization to test");
     Employee employee = employees.get(0);
 
-    // Update employee details
-    String originalPosition = employee.getPosition();
+    final String originalPosition = employee.getPosition();
     employee.setPosition("Updated Position");
 
     boolean updated = realConnection.updateEmployee(testOrganizationId, employee);
@@ -216,7 +258,11 @@ public class MysqlConnectionTest {
 
     // Verify the update
     Employee updatedEmployee = realConnection.getEmployee(testOrganizationId, employee.getId());
-    assertEquals("Updated Position", updatedEmployee.getPosition(), "Employee position should be updated");
+    assertEquals(
+        "Updated Position",
+        updatedEmployee.getPosition(),
+        "Employee position should be updated"
+    );
 
     // Restore original position
     employee.setPosition(originalPosition);
@@ -231,7 +277,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testUpdateDepartmentWithInvalidHead() {
+  public void testUpdateDepartmentWithInvalidHead() throws Exception {
     List<Department> departments = realConnection.getDepartments(testOrganizationId);
     assumeTrue(!departments.isEmpty(), "No departments found in the organization to test");
     Department department = departments.get(0);
@@ -284,25 +330,35 @@ public class MysqlConnectionTest {
   public void testInsertDepartment() {
     Department newDepartment = new Department(0, "New Department", new ArrayList<>());
 
-    Department insertedDepartment = realConnection.insertDepartment(testOrganizationId, newDepartment);
+    Department insertedDepartment = realConnection.insertDepartment(
+        testOrganizationId,
+        newDepartment
+    );
     assertNotNull(insertedDepartment, "Inserted department should not be null");
     assertTrue(insertedDepartment.getId() > 0, "Inserted department ID should be positive");
 
-    // Cleanup: Remove the inserted department
-    boolean removed = realConnection.removeDepartment(testOrganizationId, insertedDepartment.getId());
+    boolean removed = realConnection.removeDepartment(
+        testOrganizationId,
+        insertedDepartment.getId()
+    );
     assertTrue(removed, "Inserted department should be removed successfully");
   }
 
   @Test
   public void testInsertDepartmentWithExistingName() {
-    // Attempt to insert a department with a name that already exists
+    // Attempt to insert a department with a name that might already exist
     Department newDepartment = new Department(0, "Engineering", new ArrayList<>());
 
-    Department insertedDepartment = realConnection.insertDepartment(testOrganizationId, newDepartment);
+    Department insertedDepartment = realConnection.insertDepartment(
+        testOrganizationId,
+        newDepartment
+    );
     assertNotNull(insertedDepartment, "Inserted department should not be null");
 
-    // Cleanup: Remove the inserted department
-    boolean removed = realConnection.removeDepartment(testOrganizationId, insertedDepartment.getId());
+    boolean removed = realConnection.removeDepartment(
+        testOrganizationId,
+        insertedDepartment.getId()
+    );
     assertTrue(removed, "Inserted department should be removed successfully");
   }
 
@@ -310,15 +366,24 @@ public class MysqlConnectionTest {
   public void testRemoveDepartment() {
     // First, insert a department to remove
     Department newDepartment = new Department(0, "Department to Remove", new ArrayList<>());
-    Department insertedDepartment = realConnection.insertDepartment(testOrganizationId, newDepartment);
+    Department insertedDepartment = realConnection.insertDepartment(
+        testOrganizationId,
+        newDepartment
+    );
     assertNotNull(insertedDepartment, "Inserted department should not be null");
 
     // Now, remove the department
-    boolean removed = realConnection.removeDepartment(testOrganizationId, insertedDepartment.getId());
+    boolean removed = realConnection.removeDepartment(
+        testOrganizationId,
+        insertedDepartment.getId()
+    );
     assertTrue(removed, "Department should be removed successfully");
 
     // Verify the removal
-    Department removedDepartment = realConnection.getDepartment(testOrganizationId, insertedDepartment.getId());
+    Department removedDepartment = realConnection.getDepartment(
+        testOrganizationId,
+        insertedDepartment.getId()
+    );
     assertNull(removedDepartment, "Department should be null after removal");
   }
 
@@ -389,9 +454,13 @@ public class MysqlConnectionTest {
     System.out.println("Connection name: " + name);
   }
 
-  // New test to cover the catch block in the constructor
+  /**
+   * Tests the MysqlConnection constructor's exception handling by inducing a SQLException.
+   *
+   * @throws Exception if reflection fails
+   */
   @Test
-  public void testMysqlConnectionConstructor_SQLException() throws Exception {
+  public void testMysqlConnectionConstructor_SqlException() throws Exception {
     // Set invalid database URL to induce SQLException
     System.setProperty("db.url", "jdbc:mysql://invalid-host:3306/invalid_db");
     System.setProperty("db.user", "invalid_user");
@@ -411,7 +480,7 @@ public class MysqlConnectionTest {
   // Tests that induce SQLException in methods by closing the connection
 
   @Test
-  public void testGetEmployee_SQLException() throws Exception {
+  public void testGetEmployee_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -420,7 +489,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetDepartment_SQLException() throws Exception {
+  public void testGetDepartment_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -429,7 +498,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetEmployees_SQLException() throws Exception {
+  public void testGetEmployees_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -439,7 +508,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetDepartments_SQLException() throws Exception {
+  public void testGetDepartments_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -449,7 +518,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetOrganization_SQLException() throws Exception {
+  public void testGetOrganization_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -458,7 +527,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testAddEmployeeToDepartment_SQLException() throws Exception {
+  public void testAddEmployeeToDepartment_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -466,12 +535,16 @@ public class MysqlConnectionTest {
     int departmentId = 1;
     int internalDeptId = testOrganizationId * 10000 + departmentId;
 
-    int result = realConnection.addEmployeeToDepartment(testOrganizationId, internalDeptId, newEmployee);
+    int result = realConnection.addEmployeeToDepartment(
+        testOrganizationId,
+        internalDeptId,
+        newEmployee
+    );
     assertEquals(-1, result, "Method should return -1 due to SQLException");
   }
 
   @Test
-  public void testRemoveEmployeeFromDepartment_SQLException() throws Exception {
+  public void testRemoveEmployeeFromDepartment_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -480,7 +553,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testUpdateEmployee_SQLException() throws Exception {
+  public void testUpdateEmployee_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -490,7 +563,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testUpdateDepartment_SQLException() throws Exception {
+  public void testUpdateDepartment_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -500,7 +573,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testUpdateOrganization_SQLException() throws Exception {
+  public void testUpdateOrganization_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -510,7 +583,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testInsertDepartment_SQLException() throws Exception {
+  public void testInsertDepartment_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -520,7 +593,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testRemoveDepartment_SQLException() throws Exception {
+  public void testRemoveDepartment_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -529,7 +602,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testInsertOrganization_SQLException() throws Exception {
+  public void testInsertOrganization_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -539,7 +612,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testRemoveOrganization_SQLException() throws Exception {
+  public void testRemoveOrganization_SqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -547,6 +620,11 @@ public class MysqlConnectionTest {
     assertFalse(result, "Method should return false due to SQLException");
   }
 
+  /**
+   * Tests adding an employee to a department with no existing employees.
+   *
+   * @throws Exception if setup fails
+   */
   @Test
   @Order(1)
   public void testAddEmployeeToDepartment_NoExistingEmployees() throws Exception {
@@ -569,7 +647,11 @@ public class MysqlConnectionTest {
     newEmployee.setSalary(50000);
     newEmployee.setPerformance(80);
 
-    int newEmployeeId = realConnection.addEmployeeToDepartment(newOrgId, internalDeptId, newEmployee);
+    int newEmployeeId = realConnection.addEmployeeToDepartment(
+        newOrgId,
+        internalDeptId,
+        newEmployee
+    );
     assertTrue(newEmployeeId > 0, "New employee ID should be positive");
 
     // Verify the employee was added
@@ -578,7 +660,11 @@ public class MysqlConnectionTest {
     assertEquals("First Employee", addedEmployee.getName(), "Employee name should match");
 
     // Cleanup
-    boolean removedEmployee = realConnection.removeEmployeeFromDepartment(newOrgId, internalDeptId, newEmployeeId);
+    boolean removedEmployee = realConnection.removeEmployeeFromDepartment(
+        newOrgId,
+        internalDeptId,
+        newEmployeeId
+    );
     assertTrue(removedEmployee, "Employee should be removed successfully");
 
     boolean removedDepartment = realConnection.removeDepartment(newOrgId, newDeptId);
@@ -588,6 +674,11 @@ public class MysqlConnectionTest {
     assertTrue(removedOrganization, "Organization should be removed successfully");
   }
 
+  /**
+   * Tests removing an employee who is set as the department head.
+   *
+   * @throws Exception if setup fails
+   */
   @Test
   @Order(2)
   public void testRemoveEmployeeFromDepartment_RemovingDepartmentHead() throws Exception {
@@ -602,7 +693,11 @@ public class MysqlConnectionTest {
     int departmentId = departments.get(0).getId();
     int internalDeptId = testOrganizationId * 10000 + departmentId;
 
-    int newEmployeeId = realConnection.addEmployeeToDepartment(testOrganizationId, internalDeptId, newEmployee);
+    int newEmployeeId = realConnection.addEmployeeToDepartment(
+        testOrganizationId,
+        internalDeptId,
+        newEmployee
+    );
     assertTrue(newEmployeeId > 0, "New employee ID should be positive");
 
     // Set the new employee as the head of the department
@@ -613,65 +708,26 @@ public class MysqlConnectionTest {
     assertTrue(updated, "Department should be updated successfully");
 
     // Now, remove the employee
-    boolean removed = realConnection.removeEmployeeFromDepartment(testOrganizationId, internalDeptId, newEmployeeId);
+    boolean removed = realConnection.removeEmployeeFromDepartment(
+        testOrganizationId,
+        internalDeptId,
+        newEmployeeId
+    );
     assertTrue(removed, "Employee should be removed successfully");
 
     // Verify that the department head is now null
     Department updatedDepartment = realConnection.getDepartment(testOrganizationId, departmentId);
-    assertNull(updatedDepartment.getHead(), "Department head should be null after removing the head");
+    assertNull(
+        updatedDepartment.getHead(),
+        "Department head should be null after removing the head"
+    );
   }
 
-  @Test
-  @Order(3)
-  public void testGetInstance_DoubleCheckedLocking() throws Exception {
-    // Use reflection to set instance to null
-    Field instanceField = MysqlConnection.class.getDeclaredField("instance");
-    instanceField.setAccessible(true);
-
-    // Save the original instance
-    MysqlConnection originalInstance = (MysqlConnection) instanceField.get(null);
-
-    // Set instance to null
-    instanceField.set(null, null);
-
-    // Call getInstance, which should create a new instance
-    MysqlConnection newInstance = MysqlConnection.getInstance();
-    assertNotNull(newInstance, "New instance should be created");
-
-    // Verify that the new instance is different from the original (if original was not null)
-    if (originalInstance != null) {
-      assertNotSame(originalInstance, newInstance, "New instance should not be the same as the original");
-    }
-
-    // Restore the original instance
-    instanceField.set(null, originalInstance);
-  }
-
-  @Test
-  @Order(4)
-  public void testUpdateNonexistentOrganization_ReturnsFalse() {
-    Organization organization = new Organization(-1, "Nonexistent Organization");
-    boolean updated = realConnection.updateOrganization(organization);
-    assertFalse(updated, "Updating a nonexistent organization should return false");
-  }
-
-  @Test
-  @Order(5)
-  public void testUpdateNonexistentDepartment_ReturnsFalse() {
-    Department department = new Department(-1, "Nonexistent Department", new ArrayList<>());
-    boolean updated = realConnection.updateDepartment(testOrganizationId, department);
-    assertFalse(updated, "Updating a nonexistent department should return false");
-  }
-
-  @Test
-  @Order(6)
-  public void testAddEmployeeToNonexistentDepartment_NoRowsAffected() {
-    Employee newEmployee = new Employee(0, "Test Employee", new Date());
-    int nonExistentDeptId = -1;
-    int newEmployeeId = realConnection.addEmployeeToDepartment(testOrganizationId, nonExistentDeptId, newEmployee);
-    assertEquals(-1, newEmployeeId, "Should return -1 when adding to a nonexistent department");
-  }
-
+  /**
+   * Closes the database connection using reflection to induce SQLException.
+   *
+   * @throws Exception if reflection fails
+   */
   private void closeConnection() throws Exception {
     Field connectionField = MysqlConnection.class.getDeclaredField("connection");
     connectionField.setAccessible(true);

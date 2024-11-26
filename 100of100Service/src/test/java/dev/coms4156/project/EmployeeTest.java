@@ -1,7 +1,6 @@
 package dev.coms4156.project;
 
 import java.util.Date;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
@@ -113,7 +112,11 @@ public class EmployeeTest {
   public void testFullConstructorWithNullValues() {
     Employee employeeFull = new Employee(3, "TestFull", null, null, 0, 0);
     Assertions.assertNotNull(employeeFull.getHireDate(), "Hire date should not be null");
-    Assertions.assertEquals("Other", employeeFull.getPosition(), "Position should default to 'Other'");
+    Assertions.assertEquals(
+        "Other",
+        employeeFull.getPosition(),
+        "Position should default to 'Other'"
+    );
   }
 
 }
