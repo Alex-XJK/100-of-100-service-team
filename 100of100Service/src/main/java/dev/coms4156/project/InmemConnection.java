@@ -23,7 +23,7 @@ public class InmemConnection implements DatabaseConnection {
   /**
    * Constructs a DatabaseConnectionStub and initializes test data.
    */
-  private InmemConnection() {
+  InmemConnection() {
     initializeTestData();
   }
 
@@ -410,5 +410,14 @@ public class InmemConnection implements DatabaseConnection {
    */
   public Map<Integer, List<Department>> getTestDepartments() {
     return testDepartments;
+  }
+
+  /**
+   * Provides access to the internal testOrganizations map for testing purposes.
+   *
+   * @return the testOrganizations map
+   */
+  public Map<Integer, Organization> getTestOrganizations() {
+    return testOrganizations;
   }
 }
