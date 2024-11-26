@@ -25,10 +25,11 @@ public class MysqlConnection implements DatabaseConnection {
 
   private MysqlConnection() {
     try {
-      String url = "jdbc:mysql://new-db.c3uqsummqbeu.us-east-1.rds.amazonaws.com:3306/"
-              + "organization_management";
-      String user = "admin";
-      String password = "12345678";
+      String url = System.getProperty("db.url",
+              "jdbc:mysql://new-db.c3uqsummqbeu.us-east-1.rds.amazonaws.com:3306/organization_management");
+      String user = System.getProperty("db.user", "admin");
+      String password = System.getProperty("db.password", "12345678");
+
       this.connection = DriverManager.getConnection(url, user, password);
     } catch (SQLException e) {
       e.printStackTrace();
