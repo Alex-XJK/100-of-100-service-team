@@ -129,7 +129,7 @@ public class DepartmentTest {
   // New test to cover position being null, empty, or whitespace
   @Test
   @Order(12)
-  public void testGetEmployeePositionStatistic_UnassignedPositions() {
+  public void testGetEmployeePositionStatisticUnassignedPositions() {
     Employee employee3 = new Employee(3, "Alice", new Date());
     employee3.setPosition(null);
     Employee employee4 = new Employee(4, "Bob", new Date());
@@ -173,7 +173,7 @@ public class DepartmentTest {
 
   @Test
   @Order(15)
-  public void testGetEmployeeSalaryStatistic_NoSalaries() {
+  public void testGetEmployeeSalaryStatisticNoSalaries() {
     Employee employeeNoSalary1 = new Employee(6, "David", new Date());
     employeeNoSalary1.setSalary(0.0);
     Employee employeeNoSalary2 = new Employee(7, "Eve", new Date());
@@ -198,7 +198,7 @@ public class DepartmentTest {
 
   @Test
   @Order(16)
-  public void testGetEmployeeSalaryStatistic_NoSalaryData() {
+  public void testGetEmployeeSalaryStatisticNoSalaryData() {
     Employee employeeNoSalary1 = new Employee(6, "David", new Date());
     Employee employeeNoSalary2 = new Employee(7, "Eve", new Date());
 

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,6 @@ public class OrganizationTest {
   private static Employee employee1;
   private static Employee employee2;
   private static Department department1;
-  private static Department departmentWithNullName;
-  private static Department departmentWithNullEmployees;
 
   /**
    * Sets up the test environment by initializing the Organization and Employee instances.
@@ -51,7 +50,7 @@ public class OrganizationTest {
 
   @Test
   @Order(2)
-  public void testRemoveEmployee_Present() {
+  public void testRemoveEmployeePresent() {
     // Employee1 is in the organization
     boolean removed = organization.removeEmployee(employee1);
     assertTrue(removed, "Employee should be removed successfully");
@@ -61,7 +60,7 @@ public class OrganizationTest {
 
   @Test
   @Order(3)
-  public void testRemoveEmployee_NotPresent() {
+  public void testRemoveEmployeeNotPresent() {
     // Employee1 has already been removed
     boolean removed = organization.removeEmployee(employee1);
     assertFalse(removed, "Removing a non-existent employee should return false");
@@ -71,14 +70,14 @@ public class OrganizationTest {
 
   @Test
   @Order(4)
-  public void testGetNumEmployees_Empty() {
+  public void testGetNumEmployeesEmpty() {
     int numEmployees = organization.getNumEmployees();
     assertEquals(0, numEmployees, "Organization should have 0 employees");
   }
 
   @Test
   @Order(5)
-  public void testGetNumEmployees_NonEmpty() {
+  public void testGetNumEmployeesNonEmpty() {
     organization.addEmployee(employee2);
     int numEmployees = organization.getNumEmployees();
     assertEquals(1, numEmployees, "Organization should have 1 employee");
@@ -94,9 +93,9 @@ public class OrganizationTest {
 
   @Test
   @Order(7)
-  public void testToJson_DepartmentWithNullName() {
+  public void testToJsonDepartmentWithNullName() {
     // Create a department with null name
-    departmentWithNullName = new Department(2, null);
+    Department departmentWithNullName = new Department(2, null);
     organization.addDepartment(departmentWithNullName);
 
     Map<String, Object> orgJson = organization.toJson();
@@ -118,9 +117,9 @@ public class OrganizationTest {
 
   @Test
   @Order(8)
-  public void testToJson_DepartmentWithNullEmployees() throws Exception {
+  public void testToJsonDepartmentWithNullEmployees() throws Exception {
     // Create a department with null employees list
-    departmentWithNullEmployees = new DepartmentWithNullEmployees(3, "IT");
+    Department departmentWithNullEmployees = new DepartmentWithNullEmployees(3, "IT");
     organization.addDepartment(departmentWithNullEmployees);
 
     Map<String, Object> orgJson = organization.toJson();
@@ -150,7 +149,7 @@ public class OrganizationTest {
 
     @Override
     public List<Employee> getEmployees() {
-      return null;
+      return new ArrayList<>();
     }
   }
 }

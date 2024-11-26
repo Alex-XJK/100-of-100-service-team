@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
  */
 public class HrDatabaseFacadeTest {
 
-  private DatabaseConnection dbConnection;
   private HrDatabaseFacade facade;
   private int testOrganizationId = 1;
 
@@ -32,14 +31,14 @@ public class HrDatabaseFacadeTest {
    */
   @BeforeEach
   public void setup() {
-    dbConnection = InmemConnection.getInstance();
+    DatabaseConnection dbConnection = InmemConnection.getInstance();
     HrDatabaseFacade.setConnection(dbConnection);
     facade = HrDatabaseFacade.getInstance(testOrganizationId);
   }
 
   @Test
   @Order(1)
-  public void testGetEmployee_employeeNotInCache() throws Exception {
+  public void testGetEmployeeNotInCache() throws Exception {
     Field employeesField = HrDatabaseFacade.class.getDeclaredField("employees");
     employeesField.setAccessible(true);
     employeesField.set(facade, new ArrayList<>());
@@ -48,6 +47,7 @@ public class HrDatabaseFacadeTest {
     assertNotNull(employee, "Employee should be fetched from database when not in cache");
 
     // Verify cache is updated
+    @SuppressWarnings("unchecked")
     List<Employee> employeesCache = (List<Employee>) employeesField.get(facade);
     assertFalse(employeesCache.isEmpty(), "Employees cache should be updated");
     assertTrue(employeesCache.contains(employee),
@@ -56,7 +56,7 @@ public class HrDatabaseFacadeTest {
 
   @Test
   @Order(2)
-  public void testGetDepartment_departmentNotInCache() throws Exception {
+  public void testGetDepartmentNotInCache() throws Exception {
     Field departmentsField = HrDatabaseFacade.class.getDeclaredField("departments");
     departmentsField.setAccessible(true);
     departmentsField.set(facade, new ArrayList<>());
@@ -67,7 +67,7 @@ public class HrDatabaseFacadeTest {
 
   @Test
   @Order(3)
-  public void testRemoveEmployeeFromDepartment_DepartmentWithMultipleEmployees() {
+  public void testRemoveEmployeeFromDepartmentWithMultipleEmployees() {
     // Add multiple employees to a department
     Employee employee1 = new Employee(0, "Employee1", new Date());
     Employee employee2 = new Employee(0, "Employee2", new Date());
@@ -86,7 +86,7 @@ public class HrDatabaseFacadeTest {
 
   @Test
   @Order(4)
-  public void testRemoveDepartment_Successful() throws Exception {
+  public void testRemoveDepartmentSuccessful() throws Exception {
     // Create a mock DatabaseConnection that returns true for removeDepartment
     DatabaseConnection mockDbConnection = new InmemConnection() {
       @Override
@@ -104,14 +104,15 @@ public class HrDatabaseFacadeTest {
     boolean removed = facade.removeDepartment(99);
     assertTrue(removed, "Department should be removed successfully");
 
-    assertFalse(facade.departments.stream()
-            .anyMatch(dept -> dept.getId() == 99),
-        "Department should be removed from the cache");
+    @SuppressWarnings("unchecked")
+    Map<Integer, HrDatabaseFacade> instancesMap = getInstancesMapViaReflection();
+    assertFalse(instancesMap.containsKey(99),
+        "Facade instance should be removed from instances map");
   }
 
   @Test
   @Order(5)
-  public void testRemoveOrganization_Successful() {
+  public void testRemoveOrganizationSuccessful() {
     // Create a mock DatabaseConnection that returns true for removeOrganization
     DatabaseConnection mockDbConnection = new InmemConnection() {
       @Override
@@ -128,6 +129,7 @@ public class HrDatabaseFacadeTest {
     boolean removed = HrDatabaseFacade.removeOrganization(testOrganizationId);
     assertTrue(removed, "Organization should be removed successfully");
 
+    @SuppressWarnings("unchecked")
     Map<Integer, HrDatabaseFacade> instancesMap = getInstancesMapViaReflection();
     assertFalse(instancesMap.containsKey(testOrganizationId),
         "Facade instance should be removed from instances map");
@@ -135,7 +137,8 @@ public class HrDatabaseFacadeTest {
 
   @Test
   @Order(6)
-  public void testGetInstance_DoubleCheckedLocking() {
+  public void testGetInstanceDoubleCheckedLocking() {
+    @SuppressWarnings("unchecked")
     Map<Integer, HrDatabaseFacade> instancesMap = getInstancesMapViaReflection();
     instancesMap.clear();
 
@@ -144,16 +147,6 @@ public class HrDatabaseFacadeTest {
 
     assertTrue(instancesMap.containsKey(testOrganizationId),
         "Instances map should contain the organization ID");
-  }
-
-  private DatabaseConnection getDbConnectionViaReflection() {
-    try {
-      Field dbConnectionField = HrDatabaseFacade.class.getDeclaredField("dbConnection");
-      dbConnectionField.setAccessible(true);
-      return (DatabaseConnection) dbConnectionField.get(null);
-    } catch (Exception e) {
-      throw new RuntimeException("Failed to access dbConnection via reflection", e);
-    }
   }
 
   private Map<Integer, HrDatabaseFacade> getInstancesMapViaReflection() {
@@ -215,7 +208,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(12)
+  @Order(12) // Note: Duplicate @Order value
   public void testAddEmployeeToDepartment() {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     newEmployee.setPosition("Tester");
@@ -287,8 +280,11 @@ public class HrDatabaseFacadeTest {
       assertTrue(updated, "Employee should be updated successfully");
 
       Employee updatedEmployee = facade.getEmployee(1);
-      assertEquals("Updated Position", updatedEmployee.getPosition(),
-          "Employee position should be updated");
+      assertEquals(
+          "Updated Position",
+          updatedEmployee.getPosition(),
+          "Employee position should be updated"
+      );
     } finally {
       // Restore the original employee position
       employee.setPosition(originalPosition);

@@ -328,7 +328,7 @@ public class InmemConnectionTest {
   }
 
   @Test
-  public void testAddEmployeeToDepartment_MaxIdCalculation() {
+  public void testAddEmployeeToDepartmentMaxIdCalculation() {
     List<Employee> employees = inmemConnection.getTestEmployees().get(testOrganizationId);
     if (employees == null) {
       employees = new ArrayList<>();
@@ -367,7 +367,7 @@ public class InmemConnectionTest {
   }
 
   @Test
-  public void testRemoveEmployeeFromDepartment_RemovingDepartmentHead() {
+  public void testRemoveEmployeeFromDepartmentRemovingDepartmentHead() {
     Employee newEmployee = new Employee(0, "Department Head", new Date());
     newEmployee.setPosition("Manager");
     newEmployee.setSalary(60000);
@@ -442,7 +442,7 @@ public class InmemConnectionTest {
   }
 
   @Test
-  public void testInsertOrganization_MaxIdCalculation() {
+  public void testInsertOrganizationMaxIdCalculation() {
     // Ensure testOrganizations has multiple IDs
     Map<Integer, Organization> testOrganizations = inmemConnection.getTestOrganizations();
 
@@ -459,7 +459,7 @@ public class InmemConnectionTest {
   }
 
   @Test
-  public void testGetInstance_DoubleCheckedLocking() throws Exception {
+  public void testGetInstanceDoubleCheckedLocking() throws Exception {
     // Use reflection to set instance to null
     Field instanceField = InmemConnection.class.getDeclaredField("instance");
     instanceField.setAccessible(true);

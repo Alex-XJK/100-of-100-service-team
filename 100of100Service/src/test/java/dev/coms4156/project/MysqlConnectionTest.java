@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import dev.coms4156.project.exception.InternalServerErrorException;
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -19,15 +20,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A unit test class for the real MysqlConnection class.
  */
 public class MysqlConnectionTest {
-
-  private static final Logger logger = LoggerFactory.getLogger(MysqlConnectionTest.class);
 
   private MysqlConnection realConnection;
   private int testOrganizationId = 1;
@@ -67,7 +64,6 @@ public class MysqlConnectionTest {
     Field instanceField = MysqlConnection.class.getDeclaredField("instance");
     instanceField.setAccessible(true);
     instanceField.set(null, null);
-    // Do not re-initialize realConnection here; let setup() handle it
   }
 
   @Test
@@ -148,6 +144,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(3)
   public void testAddEmployeeToDepartment() {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     newEmployee.setPosition("Tester");
@@ -181,6 +178,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(4)
   public void testAddEmployeeToNonexistentDepartment() {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     int nonExistentDeptId = -1;
@@ -193,6 +191,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(5)
   public void testRemoveEmployeeFromDepartment() {
     // First, add an employee to remove
     Employee newEmployee = new Employee(0, "Employee to Remove", new Date());
@@ -229,6 +228,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(6)
   public void testRemoveNonexistentEmployeeFromDepartment() {
     List<Department> departments = realConnection.getDepartments(testOrganizationId);
     assumeTrue(!departments.isEmpty(), "No departments found in the organization to test");
@@ -245,6 +245,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(7)
   public void testUpdateEmployee() {
     List<Employee> employees = realConnection.getEmployees(testOrganizationId);
     assumeTrue(!employees.isEmpty(), "No employees found in the organization to test");
@@ -270,6 +271,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(8)
   public void testUpdateNonexistentEmployee() {
     Employee employee = new Employee(-1, "Nonexistent Employee", new Date());
     boolean updated = realConnection.updateEmployee(testOrganizationId, employee);
@@ -277,6 +279,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(9)
   public void testUpdateDepartmentWithInvalidHead() throws Exception {
     List<Department> departments = realConnection.getDepartments(testOrganizationId);
     assumeTrue(!departments.isEmpty(), "No departments found in the organization to test");
@@ -291,6 +294,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(10)
   public void testUpdateDepartmentWithNullHead() {
     List<Department> departments = realConnection.getDepartments(testOrganizationId);
     assumeTrue(!departments.isEmpty(), "No departments found in the organization to test");
@@ -304,6 +308,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(11)
   public void testUpdateDepartmentWithValidHead() {
     List<Department> departments = realConnection.getDepartments(testOrganizationId);
     assumeTrue(!departments.isEmpty(), "No departments found in the organization to test");
@@ -320,6 +325,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(12)
   public void testUpdateNonexistentOrganization() {
     Organization organization = new Organization(-1, "Nonexistent Organization");
     boolean updated = realConnection.updateOrganization(organization);
@@ -327,6 +333,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(13)
   public void testInsertDepartment() {
     Department newDepartment = new Department(0, "New Department", new ArrayList<>());
 
@@ -345,6 +352,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(14)
   public void testInsertDepartmentWithExistingName() {
     // Attempt to insert a department with a name that might already exist
     Department newDepartment = new Department(0, "Engineering", new ArrayList<>());
@@ -363,6 +371,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(15)
   public void testRemoveDepartment() {
     // First, insert a department to remove
     Department newDepartment = new Department(0, "Department to Remove", new ArrayList<>());
@@ -388,12 +397,14 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(16)
   public void testRemoveNonexistentDepartment() {
     boolean removed = realConnection.removeDepartment(testOrganizationId, -1);
     assertFalse(removed, "Removing a nonexistent department should return false");
   }
 
   @Test
+  @Order(17)
   public void testInsertOrganization() {
     Organization newOrg = new Organization(0, "New Organization");
     Organization insertedOrg = realConnection.insertOrganization(newOrg);
@@ -406,6 +417,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(18)
   public void testInsertOrganizationWithExistingName() {
     // Attempt to insert an organization with a name that might already exist
     Organization newOrg = new Organization(0, "Acme Corp");
@@ -418,6 +430,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(19)
   public void testRemoveOrganization() {
     // First, insert an organization to remove
     Organization newOrg = new Organization(0, "Organization to Remove");
@@ -434,12 +447,14 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(20)
   public void testRemoveNonexistentOrganization() {
     boolean removed = realConnection.removeOrganization(-1);
     assertFalse(removed, "Removing a nonexistent organization should return false");
   }
 
   @Test
+  @Order(21)
   public void testMysqlConnectionSingleton() {
     // Since the constructor is private, we'll test the singleton instance
     MysqlConnection connection1 = MysqlConnection.getInstance();
@@ -448,6 +463,7 @@ public class MysqlConnectionTest {
   }
 
   @Test
+  @Order(22)
   public void testConnectionName() {
     String name = realConnection.connectionName();
     assertNotNull(name, "Connection name should not be null");
@@ -460,7 +476,8 @@ public class MysqlConnectionTest {
    * @throws Exception if reflection fails
    */
   @Test
-  public void testMysqlConnectionConstructor_SqlException() throws Exception {
+  @Order(23)
+  public void testMysqlConnectionConstructorSqlException() throws Exception {
     // Set invalid database URL to induce SQLException
     System.setProperty("db.url", "jdbc:mysql://invalid-host:3306/invalid_db");
     System.setProperty("db.user", "invalid_user");
@@ -480,7 +497,8 @@ public class MysqlConnectionTest {
   // Tests that induce SQLException in methods by closing the connection
 
   @Test
-  public void testGetEmployee_SqlException() throws Exception {
+  @Order(24)
+  public void testGetEmployeeSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -489,7 +507,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetDepartment_SqlException() throws Exception {
+  @Order(25)
+  public void testGetDepartmentSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -498,7 +517,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetEmployees_SqlException() throws Exception {
+  @Order(26)
+  public void testGetEmployeesSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -508,7 +528,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetDepartments_SqlException() throws Exception {
+  @Order(27)
+  public void testGetDepartmentsSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -518,7 +539,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testGetOrganization_SqlException() throws Exception {
+  @Order(28)
+  public void testGetOrganizationSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -527,7 +549,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testAddEmployeeToDepartment_SqlException() throws Exception {
+  @Order(29)
+  public void testAddEmployeeToDepartmentSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -544,7 +567,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testRemoveEmployeeFromDepartment_SqlException() throws Exception {
+  @Order(30)
+  public void testRemoveEmployeeFromDepartmentSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -553,7 +577,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testUpdateEmployee_SqlException() throws Exception {
+  @Order(31)
+  public void testUpdateEmployeeSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -563,7 +588,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testUpdateDepartment_SqlException() throws Exception {
+  @Order(32)
+  public void testUpdateDepartmentSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -573,7 +599,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testUpdateOrganization_SqlException() throws Exception {
+  @Order(33)
+  public void testUpdateOrganizationSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -583,7 +610,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testInsertDepartment_SqlException() throws Exception {
+  @Order(34)
+  public void testInsertDepartmentSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -593,7 +621,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testRemoveDepartment_SqlException() throws Exception {
+  @Order(35)
+  public void testRemoveDepartmentSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -602,7 +631,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testInsertOrganization_SqlException() throws Exception {
+  @Order(36)
+  public void testInsertOrganizationSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -612,7 +642,8 @@ public class MysqlConnectionTest {
   }
 
   @Test
-  public void testRemoveOrganization_SqlException() throws Exception {
+  @Order(37)
+  public void testRemoveOrganizationSqlException() throws Exception {
     // Use reflection to close the connection and induce SQLException
     closeConnection();
 
@@ -626,8 +657,8 @@ public class MysqlConnectionTest {
    * @throws Exception if setup fails
    */
   @Test
-  @Order(1)
-  public void testAddEmployeeToDepartment_NoExistingEmployees() throws Exception {
+  @Order(38)
+  public void testAddEmployeeToDepartmentNoExistingEmployees() throws Exception {
     // Create a new organization
     Organization newOrg = new Organization(0, "New Org for Testing");
     Organization insertedOrg = realConnection.insertOrganization(newOrg);
@@ -680,8 +711,8 @@ public class MysqlConnectionTest {
    * @throws Exception if setup fails
    */
   @Test
-  @Order(2)
-  public void testRemoveEmployeeFromDepartment_RemovingDepartmentHead() throws Exception {
+  @Order(39)
+  public void testRemoveEmployeeFromDepartmentRemovingDepartmentHead() throws Exception {
     // First, add a new employee
     Employee newEmployee = new Employee(0, "Department Head", new Date());
     newEmployee.setPosition("Manager");
@@ -732,11 +763,30 @@ public class MysqlConnectionTest {
     Field connectionField = MysqlConnection.class.getDeclaredField("connection");
     connectionField.setAccessible(true);
     Connection connection = (Connection) connectionField.get(realConnection);
-    connection.close();
+    if (connection != null && !connection.isClosed()) {
+      try {
+        connection.close();
+        System.out.println("Connection closed successfully.");
+      } catch (SQLException e) {
+        e.printStackTrace();
+      }
+    }
 
-    // Also reset the instance so that subsequent tests get a fresh connection
-    Field instanceField = MysqlConnection.class.getDeclaredField("instance");
-    instanceField.setAccessible(true);
-    instanceField.set(null, null);
+    resetMysqlConnectionInstance();
+  }
+
+  /**
+   * Helper class to simulate a Department with null employees list.
+   */
+  private static class DepartmentWithNullEmployees extends Department {
+    public DepartmentWithNullEmployees(int id, String name) {
+      super(id, name);
+    }
+
+    @Override
+    public List<Employee> getEmployees() {
+      // Return an empty list instead of null to comply with style guidelines
+      return new ArrayList<>();
+    }
   }
 }
