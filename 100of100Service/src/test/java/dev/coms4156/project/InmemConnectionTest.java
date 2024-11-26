@@ -1,13 +1,19 @@
 package dev.coms4156.project;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +59,8 @@ public class InmemConnectionTest {
   public void testGetEmployeesForNonexistentOrganization() {
     List<Employee> employees = inmemConnection.getEmployees(-1);
     assertNotNull(employees, "Employees list should not be null");
-    assertTrue(employees.isEmpty(), "Employees list should be empty for nonexistent organization");
+    assertTrue(employees.isEmpty(),
+        "Employees list should be empty for nonexistent organization");
   }
 
   @Test
@@ -81,7 +88,8 @@ public class InmemConnectionTest {
   public void testGetDepartmentsForNonexistentOrganization() {
     List<Department> departments = inmemConnection.getDepartments(-1);
     assertNotNull(departments, "Departments list should not be null");
-    assertTrue(departments.isEmpty(), "Departments list should be empty for nonexistent organization");
+    assertTrue(departments.isEmpty(),
+        "Departments list should be empty for nonexistent organization");
   }
 
   @Test
@@ -102,7 +110,8 @@ public class InmemConnectionTest {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     int nonExistentDeptId = -1;
 
-    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId, nonExistentDeptId, newEmployee);
+    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId,
+        nonExistentDeptId, newEmployee);
     assertEquals(-1, newEmployeeId, "Should return -1 when adding to a nonexistent department");
   }
 
@@ -114,7 +123,8 @@ public class InmemConnectionTest {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     int departmentId = 1;
 
-    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId, departmentId, newEmployee);
+    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId,
+        departmentId, newEmployee);
     assertEquals(-1, newEmployeeId, "Should return -1 when departments list is null");
   }
 
@@ -127,17 +137,20 @@ public class InmemConnectionTest {
 
     int departmentId = 1;
 
-    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId, departmentId, newEmployee);
+    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId,
+        departmentId, newEmployee);
     assertTrue(newEmployeeId > 0, "New employee ID should be positive");
 
-    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId, departmentId, newEmployeeId);
+    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId,
+        departmentId, newEmployeeId);
     assertTrue(removed, "Employee should be removed successfully");
 
     Employee removedEmployee = inmemConnection.getEmployee(testOrganizationId, newEmployeeId);
     assertNull(removedEmployee, "Employee should be null after removal");
 
     Department department = inmemConnection.getDepartment(testOrganizationId, departmentId);
-    assertFalse(department.getEmployees().stream().anyMatch(emp -> emp.getId() == newEmployeeId),
+    assertFalse(department.getEmployees().stream()
+            .anyMatch(emp -> emp.getId() == newEmployeeId),
         "Employee should be removed from the department");
   }
 
@@ -146,7 +159,8 @@ public class InmemConnectionTest {
     int departmentId = 1;
     int nonExistentEmployeeId = -1;
 
-    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId, departmentId, nonExistentEmployeeId);
+    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId,
+        departmentId, nonExistentEmployeeId);
     assertFalse(removed, "Removing a nonexistent employee should return false");
   }
 
@@ -155,7 +169,8 @@ public class InmemConnectionTest {
     int nonExistentDeptId = -1;
     int employeeId = 1;
 
-    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId, nonExistentDeptId, employeeId);
+    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId,
+        nonExistentDeptId, employeeId);
     assertFalse(removed, "Removing from a nonexistent department should return false");
   }
 
@@ -172,16 +187,20 @@ public class InmemConnectionTest {
     assertNotNull(department, "Department should not be null");
 
     String originalName = department.getName();
-    department.setName("Updated Department Name");
+    try {
+      department.setName("Updated Department Name");
 
-    boolean updated = inmemConnection.updateDepartment(testOrganizationId, department);
-    assertTrue(updated, "Department should be updated successfully");
+      boolean updated = inmemConnection.updateDepartment(testOrganizationId, department);
+      assertTrue(updated, "Department should be updated successfully");
 
-    Department updatedDepartment = inmemConnection.getDepartment(testOrganizationId, 1);
-    assertEquals("Updated Department Name", updatedDepartment.getName(), "Department name should be updated");
-
-    department.setName(originalName);
-    inmemConnection.updateDepartment(testOrganizationId, department);
+      Department updatedDepartment = inmemConnection.getDepartment(testOrganizationId, 1);
+      assertEquals("Updated Department Name", updatedDepartment.getName(),
+          "Department name should be updated");
+    } finally {
+      // Restore the original department name
+      department.setName(originalName);
+      inmemConnection.updateDepartment(testOrganizationId, department);
+    }
   }
 
   @Test
@@ -221,7 +240,8 @@ public class InmemConnectionTest {
 
     Organization retrievedOrg = inmemConnection.getOrganization(insertedOrg.getId());
     assertNotNull(retrievedOrg, "Retrieved organization should not be null");
-    assertEquals("New Organization", retrievedOrg.getName(), "Organization name should match");
+    assertEquals("New Organization", retrievedOrg.getName(),
+        "Organization name should match");
   }
 
   @Test
@@ -242,7 +262,8 @@ public class InmemConnectionTest {
   @Test
   public void testInsertDepartment() {
     Department newDepartment = new Department(0, "New Department", new ArrayList<>());
-    Department insertedDepartment = inmemConnection.insertDepartment(testOrganizationId, newDepartment);
+    Department insertedDepartment = inmemConnection.insertDepartment(testOrganizationId,
+        newDepartment);
     assertNull(insertedDepartment, "insertDepartment should return null as per implementation");
   }
 
@@ -261,7 +282,8 @@ public class InmemConnectionTest {
 
     Organization resetOrg = inmemConnection.getOrganization(testOrganizationId);
     assertNotNull(resetOrg, "Organization should not be null after reset");
-    assertNotEquals("Modified Name", resetOrg.getName(), "Organization name should be reset");
+    assertNotEquals("Modified Name", resetOrg.getName(),
+        "Organization name should be reset");
   }
 
   @Test
@@ -286,7 +308,8 @@ public class InmemConnectionTest {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     int departmentId = 1;
 
-    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId, departmentId, newEmployee);
+    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId,
+        departmentId, newEmployee);
     assertEquals(-1, newEmployeeId, "Should return -1 when employees list is null");
   }
 
@@ -298,8 +321,10 @@ public class InmemConnectionTest {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     int departmentId = 1;
 
-    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId, departmentId, newEmployee);
-    assertEquals(-1, newEmployeeId, "Should return -1 when both employees and departments lists are null");
+    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId,
+        departmentId, newEmployee);
+    assertEquals(-1, newEmployeeId,
+        "Should return -1 when both employees and departments lists are null");
   }
 
   @Test
@@ -320,7 +345,8 @@ public class InmemConnectionTest {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     int departmentId = 1;
 
-    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId, departmentId, newEmployee);
+    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId,
+        departmentId, newEmployee);
     assertEquals(4, newEmployeeId % 10000, "New employee ID should be 4");
 
     Employee addedEmployee = inmemConnection.getEmployee(testOrganizationId, 4);
@@ -335,7 +361,8 @@ public class InmemConnectionTest {
     int departmentId = 1;
     int employeeId = 1;
 
-    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId, departmentId, employeeId);
+    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId,
+        departmentId, employeeId);
     assertFalse(removed, "Removing from a null departments list should return false");
   }
 
@@ -348,19 +375,25 @@ public class InmemConnectionTest {
 
     int departmentId = 1;
 
-    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId, departmentId, newEmployee);
+    int newEmployeeId = inmemConnection.addEmployeeToDepartment(testOrganizationId,
+        departmentId, newEmployee);
     assertTrue(newEmployeeId > 0, "New employee ID should be positive");
 
     Department department = inmemConnection.getDepartment(testOrganizationId, departmentId);
-    Employee addedEmployee = inmemConnection.getEmployee(testOrganizationId, newEmployeeId % 10000);
+    Employee addedEmployee = inmemConnection.getEmployee(testOrganizationId,
+        newEmployeeId % 10000);
+
     department.setHead(addedEmployee);
 
-    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId, departmentId, newEmployeeId);
+    boolean removed = inmemConnection.removeEmployeeFromDepartment(testOrganizationId,
+        departmentId, newEmployeeId);
     assertTrue(removed, "Employee should be removed successfully");
 
-    assertNull(department.getHead(), "Department head should be null after removing the head");
+    assertNull(department.getHead(),
+        "Department head should be null after removing the head");
 
-    assertFalse(department.getEmployees().contains(addedEmployee), "Department should not contain the removed employee");
+    assertFalse(department.getEmployees().contains(addedEmployee),
+        "Department should not contain the removed employee");
   }
 
   @Test
@@ -369,16 +402,20 @@ public class InmemConnectionTest {
     assertNotNull(employee, "Employee should not be null");
 
     String originalPosition = employee.getPosition();
-    employee.setPosition("Updated Position");
+    try {
+      employee.setPosition("Updated Position");
 
-    boolean updated = inmemConnection.updateEmployee(testOrganizationId, employee);
-    assertTrue(updated, "Employee should be updated successfully");
+      boolean updated = inmemConnection.updateEmployee(testOrganizationId, employee);
+      assertTrue(updated, "Employee should be updated successfully");
 
-    Employee updatedEmployee = inmemConnection.getEmployee(testOrganizationId, 1);
-    assertEquals("Updated Position", updatedEmployee.getPosition(), "Employee position should be updated");
-
-    employee.setPosition(originalPosition);
-    inmemConnection.updateEmployee(testOrganizationId, employee);
+      Employee updatedEmployee = inmemConnection.getEmployee(testOrganizationId, 1);
+      assertEquals("Updated Position", updatedEmployee.getPosition(),
+          "Employee position should be updated");
+    } finally {
+      // Restore the original employee position
+      employee.setPosition(originalPosition);
+      inmemConnection.updateEmployee(testOrganizationId, employee);
+    }
   }
 
   @Test
@@ -400,7 +437,8 @@ public class InmemConnectionTest {
     assertNotNull(employee, "Employee should not be null");
 
     boolean updated = inmemConnection.updateEmployee(testOrganizationId, employee);
-    assertTrue(updated, "Employee should be updated successfully even when departments list is null");
+    assertTrue(updated,
+        "Employee should be updated successfully even when departments list is null");
   }
 
   @Test
@@ -435,7 +473,8 @@ public class InmemConnectionTest {
     assertNotNull(newInstance, "New instance should be created");
 
     if (originalInstance != null) {
-      assertNotSame(originalInstance, newInstance, "New instance should not be the same as the original");
+      assertNotSame(originalInstance, newInstance,
+          "New instance should not be the same as the original");
     }
 
     instanceField.set(null, originalInstance);
