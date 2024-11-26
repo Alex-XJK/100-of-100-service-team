@@ -1,12 +1,21 @@
 package dev.coms4156.project;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import dev.coms4156.project.exception.NotFoundException;
-import org.junit.jupiter.api.*;
-
 import java.lang.reflect.Field;
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
 
 /**
  * A test class for the HrDatabaseFacade class.
@@ -18,7 +27,8 @@ public class HrDatabaseFacadeTest {
   private int testOrganizationId = 1;
 
   /**
-   * Sets up the test environment by initializing the DatabaseConnection and HrDatabaseFacade instance.
+   * Sets up the test environment by initializing the DatabaseConnection
+   * and HrDatabaseFacade instance.
    */
   @BeforeEach
   public void setup() {
@@ -40,7 +50,8 @@ public class HrDatabaseFacadeTest {
     // Verify cache is updated
     List<Employee> employeesCache = (List<Employee>) employeesField.get(facade);
     assertFalse(employeesCache.isEmpty(), "Employees cache should be updated");
-    assertTrue(employeesCache.contains(employee), "Employees cache should contain the fetched employee");
+    assertTrue(employeesCache.contains(employee),
+        "Employees cache should contain the fetched employee");
   }
 
   @Test
@@ -93,7 +104,8 @@ public class HrDatabaseFacadeTest {
     boolean removed = facade.removeDepartment(99);
     assertTrue(removed, "Department should be removed successfully");
 
-    assertFalse(facade.departments.stream().anyMatch(dept -> dept.getId() == 99),
+    assertFalse(facade.departments.stream()
+            .anyMatch(dept -> dept.getId() == 99),
         "Department should be removed from the cache");
   }
 
@@ -130,7 +142,8 @@ public class HrDatabaseFacadeTest {
     HrDatabaseFacade facadeInstance = HrDatabaseFacade.getInstance(testOrganizationId);
     assertNotNull(facadeInstance, "Facade instance should be created");
 
-    assertTrue(instancesMap.containsKey(testOrganizationId), "Instances map should contain the organization ID");
+    assertTrue(instancesMap.containsKey(testOrganizationId),
+        "Instances map should contain the organization ID");
   }
 
   private DatabaseConnection getDbConnectionViaReflection() {
@@ -215,7 +228,8 @@ public class HrDatabaseFacadeTest {
 
     // Verify the employee is in the department
     Department department = facade.getDepartment(1);
-    assertTrue(department.getEmployees().contains(addedEmployee), "Department should contain the new employee");
+    assertTrue(department.getEmployees().contains(addedEmployee),
+        "Department should contain the new employee");
   }
 
   @Test
@@ -266,16 +280,20 @@ public class HrDatabaseFacadeTest {
     assertNotNull(employee, "Employee should not be null");
 
     String originalPosition = employee.getPosition();
-    employee.setPosition("Updated Position");
+    try {
+      employee.setPosition("Updated Position");
 
-    boolean updated = facade.updateEmployee(employee);
-    assertTrue(updated, "Employee should be updated successfully");
+      boolean updated = facade.updateEmployee(employee);
+      assertTrue(updated, "Employee should be updated successfully");
 
-    Employee updatedEmployee = facade.getEmployee(1);
-    assertEquals("Updated Position", updatedEmployee.getPosition(), "Employee position should be updated");
-
-    employee.setPosition(originalPosition);
-    facade.updateEmployee(employee);
+      Employee updatedEmployee = facade.getEmployee(1);
+      assertEquals("Updated Position", updatedEmployee.getPosition(),
+          "Employee position should be updated");
+    } finally {
+      // Restore the original employee position
+      employee.setPosition(originalPosition);
+      facade.updateEmployee(employee);
+    }
   }
 
   @Test
@@ -293,16 +311,20 @@ public class HrDatabaseFacadeTest {
     assertNotNull(department, "Department should not be null");
 
     String originalName = department.getName();
-    department.setName("Updated Department Name");
+    try {
+      department.setName("Updated Department Name");
 
-    boolean updated = facade.updateDepartment(department);
-    assertTrue(updated, "Department should be updated successfully");
+      boolean updated = facade.updateDepartment(department);
+      assertTrue(updated, "Department should be updated successfully");
 
-    Department updatedDepartment = facade.getDepartment(1);
-    assertEquals("Updated Department Name", updatedDepartment.getName(), "Department name should be updated");
-
-    department.setName(originalName);
-    facade.updateDepartment(department);
+      Department updatedDepartment = facade.getDepartment(1);
+      assertEquals("Updated Department Name", updatedDepartment.getName(),
+          "Department name should be updated");
+    } finally {
+      // Restore the original department name
+      department.setName(originalName);
+      facade.updateDepartment(department);
+    }
   }
 
   @Test
@@ -319,14 +341,18 @@ public class HrDatabaseFacadeTest {
     Department newDepartment = new Department(0, "Research", new ArrayList<>());
 
     Department insertedDepartment = facade.insertDepartment(newDepartment);
-    assertNull(insertedDepartment, "insertDepartment should return null as per InmemConnection implementation");
+    assertNull(insertedDepartment,
+        "insertDepartment should return null as per InmemConnection implementation");
   }
 
   @Test
   @Order(22)
   public void testRemoveDepartment() {
     boolean removed = facade.removeDepartment(1);
-    assertFalse(removed, "removeDepartment should return false as per InmemConnection implementation");
+    assertFalse(
+        removed,
+        "removeDepartment should return false as per InmemConnection implementation"
+    );
   }
 
   @Test
@@ -336,7 +362,10 @@ public class HrDatabaseFacadeTest {
     organization.setName("Updated Org Name");
 
     boolean updated = facade.updateOrganization(organization);
-    assertFalse(updated, "updateOrganization should return false as per InmemConnection implementation");
+    assertFalse(
+        updated,
+        "updateOrganization should return false as per InmemConnection implementation"
+    );
   }
 
   @Test
@@ -349,13 +378,19 @@ public class HrDatabaseFacadeTest {
     assertTrue(insertedOrg.getId() > 0, "Inserted organization ID should be positive");
 
     HrDatabaseFacade newFacade = HrDatabaseFacade.getInstance(insertedOrg.getId());
-    assertNotNull(newFacade, "HrDatabaseFacade instance should be created for the new organization");
+    assertNotNull(
+        newFacade,
+        "HrDatabaseFacade instance should be created for the new organization"
+    );
   }
 
   @Test
   @Order(25)
   public void testRemoveOrganization() {
     boolean removed = HrDatabaseFacade.removeOrganization(testOrganizationId);
-    assertFalse(removed, "removeOrganization should return false as per InmemConnection implementation");
+    assertFalse(
+        removed,
+        "removeOrganization should return false as per InmemConnection implementation"
+    );
   }
 }
