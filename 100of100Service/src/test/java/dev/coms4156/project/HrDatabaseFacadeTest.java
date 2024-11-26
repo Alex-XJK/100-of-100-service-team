@@ -94,7 +94,7 @@ public class HrDatabaseFacadeTest {
     assertTrue(removed, "Department should be removed successfully");
 
     assertFalse(facade.departments.stream().anyMatch(dept -> dept.getId() == 99),
-            "Department should be removed from the cache");
+        "Department should be removed from the cache");
   }
 
   @Test
@@ -118,7 +118,7 @@ public class HrDatabaseFacadeTest {
 
     Map<Integer, HrDatabaseFacade> instancesMap = getInstancesMapViaReflection();
     assertFalse(instancesMap.containsKey(testOrganizationId),
-            "Facade instance should be removed from instances map");
+        "Facade instance should be removed from instances map");
   }
 
   @Test
