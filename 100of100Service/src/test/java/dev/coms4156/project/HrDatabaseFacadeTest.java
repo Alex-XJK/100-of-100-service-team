@@ -149,16 +149,6 @@ public class HrDatabaseFacadeTest {
         "Instances map should contain the organization ID");
   }
 
-  private Map<Integer, HrDatabaseFacade> getInstancesMapViaReflection() {
-    try {
-      Field instancesField = HrDatabaseFacade.class.getDeclaredField("instances");
-      instancesField.setAccessible(true);
-      return (Map<Integer, HrDatabaseFacade>) instancesField.get(null);
-    } catch (Exception e) {
-      throw new RuntimeException("Failed to access instances map via reflection", e);
-    }
-  }
-
   @Test
   @Order(7)
   public void testGetOrganization() {
@@ -208,7 +198,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(12) // Note: Duplicate @Order value
+  @Order(13)
   public void testAddEmployeeToDepartment() {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
     newEmployee.setPosition("Tester");
@@ -226,7 +216,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(13)
+  @Order(14)
   public void testAddEmployeeToNonexistentDepartment() {
     Employee newEmployee = new Employee(0, "Test Employee", new Date());
 
@@ -235,7 +225,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(14)
+  @Order(15)
   public void testRemoveEmployeeFromDepartment() {
     Employee newEmployee = new Employee(0, "Employee to Remove", new Date());
     newEmployee.setPosition("Temp");
@@ -253,21 +243,21 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(15)
+  @Order(16)
   public void testRemoveNonexistentEmployeeFromDepartment() {
     boolean removed = facade.removeEmployeeFromDepartment(1, -1);
     assertFalse(removed, "Removing a nonexistent employee should return false");
   }
 
   @Test
-  @Order(16)
+  @Order(17)
   public void testRemoveEmployeeFromNonexistentDepartment() {
     boolean removed = facade.removeEmployeeFromDepartment(-1, 1);
     assertFalse(removed, "Removing from a nonexistent department should return false");
   }
 
   @Test
-  @Order(17)
+  @Order(18)
   public void testUpdateEmployee() {
     Employee employee = facade.getEmployee(1);
     assertNotNull(employee, "Employee should not be null");
@@ -293,7 +283,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(18)
+  @Order(19)
   public void testUpdateNonexistentEmployee() {
     Employee employee = new Employee(-1, "Nonexistent Employee", new Date());
     boolean updated = facade.updateEmployee(employee);
@@ -301,7 +291,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(19)
+  @Order(20)
   public void testUpdateDepartment() {
     Department department = facade.getDepartment(1);
     assertNotNull(department, "Department should not be null");
@@ -324,7 +314,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(20)
+  @Order(21)
   public void testUpdateNonexistentDepartment() {
     Department department = new Department(-1, "Nonexistent Department", new ArrayList<>());
     boolean updated = facade.updateDepartment(department);
@@ -332,7 +322,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(21)
+  @Order(22)
   public void testInsertDepartment() {
     Department newDepartment = new Department(0, "Research", new ArrayList<>());
 
@@ -342,7 +332,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(22)
+  @Order(23)
   public void testRemoveDepartment() {
     boolean removed = facade.removeDepartment(1);
     assertFalse(
@@ -352,7 +342,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(23)
+  @Order(24)
   public void testUpdateOrganization() {
     Organization organization = facade.getOrganization();
     organization.setName("Updated Org Name");
@@ -365,7 +355,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(24)
+  @Order(25)
   public void testInsertOrganization() {
     Organization newOrg = new Organization(0, "New Organization");
 
@@ -381,7 +371,7 @@ public class HrDatabaseFacadeTest {
   }
 
   @Test
-  @Order(25)
+  @Order(26)
   public void testRemoveOrganization() {
     boolean removed = HrDatabaseFacade.removeOrganization(testOrganizationId);
     assertFalse(
@@ -389,4 +379,76 @@ public class HrDatabaseFacadeTest {
         "removeOrganization should return false as per InmemConnection implementation"
     );
   }
+
+  @Test
+  @Order(27)
+  public void testUpdateOrganizationSuccess() throws Exception {
+    // Create a mock DatabaseConnection that simulates successful updateOrganization
+    DatabaseConnection mockDbConnection = new InmemConnection() {
+      private Organization organization;
+
+      @Override
+      public boolean updateOrganization(Organization organization) {
+        this.organization = organization;
+        return true; // Simulate successful update
+      }
+
+      @Override
+      public Organization getOrganization(int orgId) {
+        return this.organization;
+      }
+    };
+
+    HrDatabaseFacade.setConnection(mockDbConnection);
+    facade = HrDatabaseFacade.getInstance(testOrganizationId);
+
+    Organization updatedOrg = new Organization(testOrganizationId, "Updated Org Name");
+
+    boolean result = facade.updateOrganization(updatedOrg);
+    assertTrue(result, "updateOrganization should return true");
+
+    Organization org = facade.getOrganization();
+    assertEquals("Updated Org Name", org.getName(), "Organization name should be updated");
+  }
+
+  @Test
+  @Order(28)
+  public void testInsertDepartmentSuccess() throws Exception {
+    // Create a mock DatabaseConnection that returns a new Department
+    DatabaseConnection mockDbConnection = new InmemConnection() {
+      @Override
+      public Department insertDepartment(int orgId, Department department) {
+        return new Department(100, department.getName(), new ArrayList<>());
+      }
+    };
+
+    HrDatabaseFacade.setConnection(mockDbConnection);
+    facade = HrDatabaseFacade.getInstance(testOrganizationId);
+
+    Department newDept = new Department(0, "Research", new ArrayList<>());
+
+    // Call insertDepartment
+    Department insertedDept = facade.insertDepartment(newDept);
+    assertNotNull(insertedDept, "insertDepartment should return the inserted Department");
+    assertTrue(insertedDept.getId() > 0, "Inserted Department ID should be positive");
+
+    boolean contains = facade.departments.contains(insertedDept);
+    assertTrue(contains, "facade.departments should contain the inserted Department");
+  }
+
+  /**
+   * Helper method to access the private static 'instances' map via reflection.
+   *
+   * @return the 'instances' map
+   */
+  private Map<Integer, HrDatabaseFacade> getInstancesMapViaReflection() {
+    try {
+      Field instancesField = HrDatabaseFacade.class.getDeclaredField("instances");
+      instancesField.setAccessible(true);
+      return (Map<Integer, HrDatabaseFacade>) instancesField.get(null);
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to access instances map via reflection", e);
+    }
+  }
+
 }

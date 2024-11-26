@@ -297,9 +297,7 @@ public final class MysqlConnection implements DatabaseConnection {
       if (rowsAffected > 0) {
         return newEmployeeId;
       }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
+    } catch (SQLException e) {e.printStackTrace();}
     return -1;
   }
 
@@ -334,22 +332,18 @@ public final class MysqlConnection implements DatabaseConnection {
           }
         }
       }
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
-    }
+      String deleteQuery =
+              "DELETE FROM employees "
+                      + "WHERE employee_id = ? AND department_id = ? AND organization_id = ?";
 
-    String deleteQuery =
-            "DELETE FROM employees "
-                    + "WHERE employee_id = ? AND department_id = ? AND organization_id = ?";
+      try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
+        pstmt.setInt(1, employeeId);
+        pstmt.setInt(2, departmentId);
+        pstmt.setInt(3, organizationId);
 
-    try (PreparedStatement pstmt = connection.prepareStatement(deleteQuery)) {
-      pstmt.setInt(1, employeeId);
-      pstmt.setInt(2, departmentId);
-      pstmt.setInt(3, organizationId);
-
-      int rowsAffected = pstmt.executeUpdate();
-      return rowsAffected > 0;
+        int rowsAffected = pstmt.executeUpdate();
+        return rowsAffected > 0;
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       return false;
@@ -503,25 +497,22 @@ public final class MysqlConnection implements DatabaseConnection {
     String deleteEmployeesQuery =
         "DELETE FROM employees WHERE organization_id = ? AND department_id = ?";
 
-    try (PreparedStatement pstmt = connection.prepareStatement(deleteEmployeesQuery)) {
-      pstmt.setInt(1, organizationId);
-      pstmt.setInt(2, internalDepartmentId);
-      pstmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
-    }
+    try (PreparedStatement pstmt1 = connection.prepareStatement(deleteEmployeesQuery)) {
+      pstmt1.setInt(1, organizationId);
+      pstmt1.setInt(2, internalDepartmentId);
+      pstmt1.executeUpdate();
 
-    // Then, remove the department
-    String deleteDepartmentQuery =
-        "DELETE FROM departments WHERE organization_id = ? AND department_id = ?";
+      // Then, remove the department
+      String deleteDepartmentQuery =
+          "DELETE FROM departments WHERE organization_id = ? AND department_id = ?";
 
-    try (PreparedStatement pstmt = connection.prepareStatement(deleteDepartmentQuery)) {
-      pstmt.setInt(1, organizationId);
-      pstmt.setInt(2, internalDepartmentId);
+      try (PreparedStatement pstmt2 = connection.prepareStatement(deleteDepartmentQuery)) {
+        pstmt2.setInt(1, organizationId);
+        pstmt2.setInt(2, internalDepartmentId);
 
-      int rowsAffected = pstmt.executeUpdate();
-      return rowsAffected > 0;
+        int rowsAffected = pstmt2.executeUpdate();
+        return rowsAffected > 0;
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       return false;
@@ -573,29 +564,23 @@ public final class MysqlConnection implements DatabaseConnection {
   public boolean removeOrganization(int organizationId) {
     // Delete employees
     String deleteEmployeesQuery = "DELETE FROM employees WHERE organization_id = ?";
-    try (PreparedStatement pstmt = connection.prepareStatement(deleteEmployeesQuery)) {
-      pstmt.setInt(1, organizationId);
-      pstmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
-    }
+    try (PreparedStatement pstmt1 = connection.prepareStatement(deleteEmployeesQuery)) {
+      pstmt1.setInt(1, organizationId);
+      pstmt1.executeUpdate();
 
-    String deleteDepartmentsQuery = "DELETE FROM departments WHERE organization_id = ?";
-    try (PreparedStatement pstmt = connection.prepareStatement(deleteDepartmentsQuery)) {
-      pstmt.setInt(1, organizationId);
-      pstmt.executeUpdate();
-    } catch (SQLException e) {
-      e.printStackTrace();
-      return false;
-    }
+      String deleteDepartmentsQuery = "DELETE FROM departments WHERE organization_id = ?";
+      try (PreparedStatement pstmt2 = connection.prepareStatement(deleteDepartmentsQuery)) {
+        pstmt2.setInt(1, organizationId);
+        pstmt2.executeUpdate();
+      }
 
-    String deleteOrganizationQuery = "DELETE FROM organizations WHERE organization_id = ?";
-    try (PreparedStatement pstmt = connection.prepareStatement(deleteOrganizationQuery)) {
-      pstmt.setInt(1, organizationId);
+      String deleteOrganizationQuery = "DELETE FROM organizations WHERE organization_id = ?";
+      try (PreparedStatement pstmt3 = connection.prepareStatement(deleteOrganizationQuery)) {
+        pstmt3.setInt(1, organizationId);
 
-      int rowsAffected = pstmt.executeUpdate();
-      return rowsAffected > 0;
+        int rowsAffected = pstmt3.executeUpdate();
+        return rowsAffected > 0;
+      }
     } catch (SQLException e) {
       e.printStackTrace();
       return false;
