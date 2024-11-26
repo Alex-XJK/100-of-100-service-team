@@ -129,8 +129,8 @@ public class Department extends OrganizationComposite {
     }
 
     double totalSalary = 0.0;
-    double highestSalary = Double.MIN_VALUE;
-    double lowestSalary = Double.MAX_VALUE;
+    double highestSalary = Double.NEGATIVE_INFINITY;
+    double lowestSalary = Double.POSITIVE_INFINITY;
     Employee highestEmployee = null;
     Employee lowestEmployee = null;
 
@@ -191,8 +191,8 @@ public class Department extends OrganizationComposite {
     double highest = performances.get(size - 1);
     double lowest = performances.get(0);
     double median = size % 2 == 0
-            ? (performances.get(size / 2 - 1) + performances.get(size / 2)) / 2
-            : performances.get(size / 2);
+        ? (performances.get(size / 2 - 1) + performances.get(size / 2)) / 2
+        : performances.get(size / 2);
 
     // Calculate quartiles safely
     double q1 = size < 4 ? lowest : performances.get(Math.max(0, (size - 1) / 4));
@@ -200,9 +200,9 @@ public class Department extends OrganizationComposite {
 
     // Calculate average
     double average = performances.stream()
-            .mapToDouble(Double::doubleValue)
-            .average()
-            .orElse(0.0);
+        .mapToDouble(Double::doubleValue)
+        .average()
+        .orElse(0.0);
 
     result.put("highest", highest);
     result.put("percentile25", q1);
@@ -213,9 +213,9 @@ public class Department extends OrganizationComposite {
 
     // Sort employees by performance (descending) and get their IDs
     int[] sortedIds = this.employees.stream()
-            .sorted((e1, e2) -> Double.compare(e2.getPerformance(), e1.getPerformance()))
-            .mapToInt(Employee::getId)
-            .toArray();
+        .sorted((e1, e2) -> Double.compare(e2.getPerformance(), e1.getPerformance()))
+        .mapToInt(Employee::getId)
+        .toArray();
     result.put("sortedEmployeeIds", sortedIds);
 
     return result;
@@ -269,7 +269,7 @@ public class Department extends OrganizationComposite {
       sb.append("\n  Employees:");  // Indent employees section
       for (Employee employee : this.employees) {
         sb.append("\n    - ").append(employee.getName())
-          .append(" (ID: ").append(employee.getId()).append(")");
+            .append(" (ID: ").append(employee.getId()).append(")");
       }
     } else {
       sb.append("\n  No employees in this department.");

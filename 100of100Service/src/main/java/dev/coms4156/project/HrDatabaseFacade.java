@@ -19,7 +19,7 @@ public final class HrDatabaseFacade {
 
   private final int organizationId;
   private List<Employee> employees;
-  private List<Department> departments;
+  List<Department> departments;
   private Organization organization;
 
   /**
@@ -53,19 +53,19 @@ public final class HrDatabaseFacade {
   public Employee getEmployee(int employeeId) {
     // Check the in-memory cache
     Employee employee = employees
-            .stream()
-            .filter(e -> e.getId() == employeeId)
-            .findFirst()
-            .orElse(null);
+        .stream()
+        .filter(e -> e.getId() == employeeId)
+        .findFirst()
+        .orElse(null);
 
     if (employee == null) {
       // If not found in cache, query the database
       List<Employee> updatedEmployees = dbConnection.getEmployees(this.organizationId);
       employee = updatedEmployees
-              .stream()
-              .filter(e -> e.getId() == employeeId)
-              .findFirst()
-              .orElse(null);
+          .stream()
+          .filter(e -> e.getId() == employeeId)
+          .findFirst()
+          .orElse(null);
 
       if (employee != null) {
         // Update the cache
@@ -85,10 +85,10 @@ public final class HrDatabaseFacade {
   public Department getDepartment(int departmentId) {
     // Check the in-memory cache
     Department department = departments
-            .stream()
-            .filter(d -> d.getId() == departmentId)
-            .findFirst()
-            .orElse(null);
+        .stream()
+        .filter(d -> d.getId() == departmentId)
+        .findFirst()
+        .orElse(null);
     if (department != null) {
       System.out.println(department.toJson());
     }
@@ -97,10 +97,10 @@ public final class HrDatabaseFacade {
       // If not found in cache, query the database
       List<Department> updatedDepartments = dbConnection.getDepartments(this.organizationId);
       department = updatedDepartments
-              .stream()
-              .filter(d -> d.getId() == departmentId)
-              .findFirst()
-              .orElse(null);
+          .stream()
+          .filter(d -> d.getId() == departmentId)
+          .findFirst()
+          .orElse(null);
 
       if (department != null) {
         // Update the cache
@@ -193,18 +193,18 @@ public final class HrDatabaseFacade {
   public Employee addEmployeeToDepartment(int departmentId, Employee employee) {
     int internalDeptId = this.organizationId * 10000 + departmentId;
     int internalEmpId = dbConnection
-            .addEmployeeToDepartment(this.organizationId, internalDeptId, employee);
+        .addEmployeeToDepartment(this.organizationId, internalDeptId, employee);
 
     if (internalEmpId != -1) {
       int externalEmpId = internalEmpId % 10000;
 
       Employee newEmployee = new Employee(
-              externalEmpId,
-              employee.getName(),
-              employee.getHireDate(),
-              employee.getPosition(),
-              employee.getSalary(),
-              employee.getPerformance()
+          externalEmpId,
+          employee.getName(),
+          employee.getHireDate(),
+          employee.getPosition(),
+          employee.getSalary(),
+          employee.getPerformance()
       );
       System.out.println(newEmployee.toJson());
 
@@ -250,9 +250,9 @@ public final class HrDatabaseFacade {
     int internalEmpId = this.organizationId * 10000 + employeeId;
 
     boolean success = dbConnection.removeEmployeeFromDepartment(
-            this.organizationId,
-            internalDeptId,
-            internalEmpId
+        this.organizationId,
+        internalDeptId,
+        internalEmpId
     );
 
     if (success) {

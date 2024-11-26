@@ -5,18 +5,18 @@ import java.util.List;
 
 /**
  * An organization composite in the HR system.
- * Just an abstract class that implements the OrganizationComponent interface.
+ * An abstract class that implements the OrganizationComponent interface.
  */
 public abstract class OrganizationComposite implements OrganizationComponent {
   protected final int id;
-  protected final String name;
+  protected String name;
   protected final List<OrganizationComponent> children;
   protected String typeName;
 
   /**
    * Constructs an organization composite with the given ID and name.
    *
-   * @param id the ID of the organization composite
+   * @param id   the ID of the organization composite
    * @param name the name of the organization composite
    */
   public OrganizationComposite(int id, String name) {
@@ -34,6 +34,15 @@ public abstract class OrganizationComposite implements OrganizationComponent {
   @Override
   public String getName() {
     return this.name;
+  }
+
+  /**
+   * Sets the name of the organization composite.
+   *
+   * @param name the new name
+   */
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Override
@@ -69,10 +78,9 @@ public abstract class OrganizationComposite implements OrganizationComponent {
   /**
    * Returns the number of children of the organization component.
    *
-   * @return the number of children of the organization component
+   * @return the number of children
    */
   int getNumChildren() {
     return this.children.size();
   }
-
 }

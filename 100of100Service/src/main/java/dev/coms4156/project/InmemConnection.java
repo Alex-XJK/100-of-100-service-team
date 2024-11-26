@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Provides in-memory data for testing purposes without connecting to a real database.
  */
-public final class InmemConnection implements DatabaseConnection {
+public class InmemConnection implements DatabaseConnection {
   private static volatile InmemConnection instance;
 
   private final Map<Integer, List<Employee>> testEmployees = new HashMap<>();
@@ -23,7 +23,7 @@ public final class InmemConnection implements DatabaseConnection {
   /**
    * Constructs a DatabaseConnectionStub and initializes test data.
    */
-  private InmemConnection() {
+  InmemConnection() {
     initializeTestData();
   }
 
@@ -89,7 +89,6 @@ public final class InmemConnection implements DatabaseConnection {
 
     int maxId = 0;
     for (Employee emp : employees) {
-
       if (emp.getId() > maxId) {
         maxId = emp.getId();
       }
@@ -97,6 +96,10 @@ public final class InmemConnection implements DatabaseConnection {
     int newEmployeeId = maxId + 1;
 
     Employee newEmployee = new Employee(newEmployeeId, employee.getName(), employee.getHireDate());
+    newEmployee.setPosition(employee.getPosition());
+    newEmployee.setSalary(employee.getSalary());
+    newEmployee.setPerformance(employee.getPerformance());
+
     employees.add(newEmployee);
     targetDept.addEmployee(newEmployee);
 
@@ -161,12 +164,12 @@ public final class InmemConnection implements DatabaseConnection {
   public Department insertDepartment(int organizationId, Department department) {
     return null;
   }
-  
+
   /**
    * Updates an employee's information in the stubbed database for a given organization.
    *
    * @param organizationId the organization ID (client ID)
-   * @param employee the {@code Employee} object containing the updated information
+   * @param employee       the {@code Employee} object containing the updated information
    * @return {@code true} if the employee was found and updated; {@code false} otherwise
    */
   @Override
@@ -213,7 +216,7 @@ public final class InmemConnection implements DatabaseConnection {
   /**
    * Retrieves an employee for a given organization by external employee ID.
    *
-   * @param organizationId the organization ID (client ID)
+   * @param organizationId     the organization ID (client ID)
    * @param externalEmployeeId the external employee ID
    * @return the Employee object if found, null otherwise
    */
@@ -233,7 +236,7 @@ public final class InmemConnection implements DatabaseConnection {
   /**
    * Retrieves a department for a given organization by external department ID.
    *
-   * @param organizationId the organization ID (client ID)
+   * @param organizationId       the organization ID (client ID)
    * @param externalDepartmentId the external department ID
    * @return the Department object if found, null otherwise
    */
@@ -294,10 +297,10 @@ public final class InmemConnection implements DatabaseConnection {
   }
 
   /**
-   * Retrieves the organization for a given organization name.
+   * Inserts a new organization into the stubbed database.
    *
    * @param organization the organization object that contains the name
-   * @return the correct Organization object
+   * @return the inserted Organization object with a new ID
    */
   @Override
   public Organization insertOrganization(Organization organization) {
@@ -315,7 +318,9 @@ public final class InmemConnection implements DatabaseConnection {
     return newOrganization;
   }
 
-  /** Initializes the test data for the stub. */
+  /**
+   * Initializes the test data for the stub.
+   */
   private void initializeTestData() {
     // Client 1 Data
     int clientId1 = 1;
@@ -387,5 +392,32 @@ public final class InmemConnection implements DatabaseConnection {
       }
     }
     return instance;
+  }
+
+  /**
+   * Provides access to the internal testEmployees map for testing purposes.
+   *
+   * @return the testEmployees map
+   */
+  public Map<Integer, List<Employee>> getTestEmployees() {
+    return testEmployees;
+  }
+
+  /**
+   * Provides access to the internal testDepartments map for testing purposes.
+   *
+   * @return the testDepartments map
+   */
+  public Map<Integer, List<Department>> getTestDepartments() {
+    return testDepartments;
+  }
+
+  /**
+   * Provides access to the internal testOrganizations map for testing purposes.
+   *
+   * @return the testOrganizations map
+   */
+  public Map<Integer, Organization> getTestOrganizations() {
+    return testOrganizations;
   }
 }
