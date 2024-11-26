@@ -19,7 +19,7 @@ public class HrDatabaseFacade {
 
   private final int organizationId;
   private List<Employee> employees;
-  private List<Department> departments;
+  List<Department> departments;
   private Organization organization;
 
   /**
