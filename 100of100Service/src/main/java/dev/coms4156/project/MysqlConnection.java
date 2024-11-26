@@ -25,8 +25,10 @@ public final class MysqlConnection implements DatabaseConnection {
 
   private MysqlConnection() {
     try {
-      String url = System.getProperty("db.url",
-              "jdbc:mysql://new-db.c3uqsummqbeu.us-east-1.rds.amazonaws.com:3306/organization_management");
+      String url = System.getProperty(
+          "db.url",
+          "jdbc:mysql://new-db.c3uqsummqbeu.us-east-1.rds.amazonaws.com:3306"
+              + "/organization_management");
       String user = System.getProperty("db.user", "admin");
       String password = System.getProperty("db.password", "12345678");
 
@@ -297,7 +299,9 @@ public final class MysqlConnection implements DatabaseConnection {
       if (rowsAffected > 0) {
         return newEmployeeId;
       }
-    } catch (SQLException e) {e.printStackTrace();}
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
     return -1;
   }
 
