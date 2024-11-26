@@ -107,4 +107,16 @@ public class EmployeeTest {
     Assertions.assertEquals(50, employee.getPerformance());
   }
 
+  @Test
+  @Order(13)
+  public void testFullConstructorWithNullValues() {
+    Employee employeeFull = new Employee(3, "TestFull", null, null, 0, 0);
+    Assertions.assertNotNull(employeeFull.getHireDate(), "Hire date should not be null");
+    Assertions.assertEquals(
+        "Other",
+        employeeFull.getPosition(),
+        "Position should default to 'Other'"
+    );
+  }
+
 }

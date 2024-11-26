@@ -126,8 +126,30 @@ public class DepartmentTest {
     Assertions.assertTrue(ac.containsKey(employee2.getPosition().trim().toLowerCase()));
   }
 
+  // New test to cover position being null, empty, or whitespace
   @Test
   @Order(12)
+  public void testGetEmployeePositionStatisticUnassignedPositions() {
+    Employee employee3 = new Employee(3, "Alice", new Date());
+    employee3.setPosition(null);
+    Employee employee4 = new Employee(4, "Bob", new Date());
+    employee4.setPosition("");
+    Employee employee5 = new Employee(5, "Charlie", new Date());
+    employee5.setPosition("   ");
+    Department dept = new Department(8, "Test Dept");
+    dept.addEmployee(employee3);
+    dept.addEmployee(employee4);
+    dept.addEmployee(employee5);
+
+    Map<String, Integer> positionStats = dept.getEmployeePositionStatisticMap();
+    System.out.println(positionStats);
+    Assertions.assertEquals(1, positionStats.size());
+    Assertions.assertTrue(positionStats.containsKey("unassigned"));
+    Assertions.assertEquals(3, positionStats.get("unassigned"));
+  }
+
+  @Test
+  @Order(13)
   public void testGetEmployeePositionStatisticEmpty() {
     Department emptyDepartment = new Department(4, "Empty");
     Map<String, Integer> ac = emptyDepartment.getEmployeePositionStatisticMap();
@@ -135,7 +157,7 @@ public class DepartmentTest {
   }
 
   @Test
-  @Order(13)
+  @Order(14)
   public void testGetEmployeeSalaryStatistic() {
     Map<String, Object> ac = department.getEmployeeSalaryStatisticMap();
     System.out.println(ac);
@@ -150,14 +172,76 @@ public class DepartmentTest {
   }
 
   @Test
-  @Order(14)
+  @Order(15)
+  public void testGetEmployeeSalaryStatisticNoSalaries() {
+    Employee employeeNoSalary1 = new Employee(6, "David", new Date());
+    employeeNoSalary1.setSalary(0.0);
+    Employee employeeNoSalary2 = new Employee(7, "Eve", new Date());
+    employeeNoSalary2.setSalary(0.0);
+
+    Department dept = new Department(9, "No Salary Dept");
+    dept.addEmployee(employeeNoSalary1);
+    dept.addEmployee(employeeNoSalary2);
+
+    Map<String, Object> salaryStats = dept.getEmployeeSalaryStatisticMap();
+    System.out.println(salaryStats);
+
+    Assertions.assertEquals(0.0, salaryStats.get("total"));
+    Assertions.assertEquals(0.0, salaryStats.get("average"));
+    Assertions.assertEquals(0.0, salaryStats.get("highest"));
+    Assertions.assertEquals(0.0, salaryStats.get("lowest"));
+    Assertions.assertNotNull(salaryStats.get("highestEmployee"));
+    Assertions.assertNotNull(salaryStats.get("lowestEmployee"));
+    Assertions.assertTrue(salaryStats.containsKey("highestEmployee"));
+    Assertions.assertTrue(salaryStats.containsKey("lowestEmployee"));
+  }
+
+  @Test
+  @Order(16)
+  public void testGetEmployeeSalaryStatisticNoSalaryData() {
+    Employee employeeNoSalary1 = new Employee(6, "David", new Date());
+    Employee employeeNoSalary2 = new Employee(7, "Eve", new Date());
+
+    Department dept = new Department(10, "No Salary Data Dept");
+    dept.addEmployee(employeeNoSalary1);
+    dept.addEmployee(employeeNoSalary2);
+
+    Map<String, Object> salaryStats = dept.getEmployeeSalaryStatisticMap();
+    System.out.println(salaryStats);
+
+    Assertions.assertEquals(0.0, salaryStats.get("total"));
+    Assertions.assertEquals(0.0, salaryStats.get("average"));
+    Assertions.assertEquals(0.0, salaryStats.get("highest"));
+    Assertions.assertEquals(0.0, salaryStats.get("lowest"));
+    Assertions.assertNotNull(salaryStats.get("highestEmployee"));
+    Assertions.assertNotNull(salaryStats.get("lowestEmployee"));
+    Assertions.assertTrue(salaryStats.containsKey("highestEmployee"));
+    Assertions.assertTrue(salaryStats.containsKey("lowestEmployee"));
+  }
+
+  @Test
+  @Order(17)
+  public void testGetEmployeeSalaryStatisticEmpty() {
+    Department emptyDepartment = new Department(5, "Empty Department");
+    Map<String, Object> ac = emptyDepartment.getEmployeeSalaryStatisticMap();
+    System.out.println(ac);
+    Assertions.assertEquals(0.0, ac.get("total"));
+    Assertions.assertEquals(0.0, ac.get("average"));
+    Assertions.assertEquals(0.0, ac.get("highest"));
+    Assertions.assertEquals(0.0, ac.get("lowest"));
+    Assertions.assertNull(ac.get("highestEmployee"));
+    Assertions.assertNull(ac.get("lowestEmployee"));
+  }
+
+  @Test
+  @Order(18)
   public void testGetEmployeePerformanceStatistic() {
     Employee e1 = new Employee(1, "A", new Date(), "DataScientist", 10.5, 100);
     Employee e2 = new Employee(2, "B", new Date(), "DataScientist", 20.5, 90);
     Employee e3 = new Employee(3, "C", new Date(), "DataScientist", 30.5, 80);
     Employee e4 = new Employee(4, "D", new Date(), "DataScientist", 40.5, 70);
     Employee e5 = new Employee(5, "E", new Date());
-    Department d1 = new Department(1, "D1", List.of(e1, e2, e3, e4, e5));
+    Department d1 = new Department(6, "D1", List.of(e1, e2, e3, e4, e5));
 
     Map<String, Object> ac = d1.getEmployeePerformanceStatisticMap();
     System.out.println(ac);
@@ -172,4 +256,18 @@ public class DepartmentTest {
     Assertions.assertArrayEquals(new int[]{1, 2, 3, 4, 5}, (int[]) ac.get("sortedEmployeeIds"));
   }
 
+  @Test
+  @Order(19)
+  public void testGetEmployeePerformanceStatisticEmpty() {
+    Department emptyDepartment = new Department(7, "Empty Department");
+    Map<String, Object> ac = emptyDepartment.getEmployeePerformanceStatisticMap();
+    System.out.println(ac);
+    Assertions.assertEquals(0.0, ac.get("highest"));
+    Assertions.assertEquals(0.0, ac.get("percentile25"));
+    Assertions.assertEquals(0.0, ac.get("median"));
+    Assertions.assertEquals(0.0, ac.get("percentile75"));
+    Assertions.assertEquals(0.0, ac.get("lowest"));
+    Assertions.assertEquals(0.0, ac.get("average"));
+    Assertions.assertArrayEquals(new int[0], (int[]) ac.get("sortedEmployeeIds"));
+  }
 }
