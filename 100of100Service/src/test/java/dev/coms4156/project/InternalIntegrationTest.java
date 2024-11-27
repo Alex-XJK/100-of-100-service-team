@@ -1,11 +1,29 @@
 package dev.coms4156.project;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 /**
  * Internal integration tests for the HR system.
@@ -33,6 +51,9 @@ public class InternalIntegrationTest {
     testOrganizationId = 1;
   }
 
+  /**
+   * Sets up the test environment.
+   */
   @BeforeEach
   public void setup() throws Exception {
     // Initialize organization, departments, employees
@@ -51,14 +72,17 @@ public class InternalIntegrationTest {
     mockDbConnection = mock(DatabaseConnection.class);
 
     // Mock Organization
-    when(mockDbConnection.getOrganization(testOrganizationId)).thenReturn(organization);
+    when(mockDbConnection.getOrganization(testOrganizationId))
+        .thenReturn(organization);
 
     // Mock departments and employees
     List<Department> mockDepartments = Arrays.asList(department1, department2);
     List<Employee> mockEmployees = Arrays.asList(employee1, employee2);
 
-    when(mockDbConnection.getDepartments(testOrganizationId)).thenReturn(mockDepartments);
-    when(mockDbConnection.getEmployees(testOrganizationId)).thenReturn(mockEmployees);
+    when(mockDbConnection.getDepartments(testOrganizationId))
+        .thenReturn(mockDepartments);
+    when(mockDbConnection.getEmployees(testOrganizationId))
+        .thenReturn(mockEmployees);
 
     // Set the mock DatabaseConnection in HrDatabaseFacade
     HrDatabaseFacade.setConnection(mockDbConnection);
@@ -75,6 +99,11 @@ public class InternalIntegrationTest {
     clearHrDatabaseFacadeInstances();
   }
 
+  /**
+   * Clears the singleton instances of HrDatabaseFacade using reflection.
+   *
+   * @throws Exception if an error occurs during reflection
+   */
   private void clearHrDatabaseFacadeInstances() throws Exception {
     Field instancesField = HrDatabaseFacade.class.getDeclaredField("instances");
     instancesField.setAccessible(true);
@@ -82,8 +111,8 @@ public class InternalIntegrationTest {
   }
 
   /**
-   * Test 1: Verifies that adding an employee to a department associates the employee with that department.
-   *
+   * Test 1: Verifies that adding an employee to a department associates the employee
+   * with that department.
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -95,7 +124,6 @@ public class InternalIntegrationTest {
 
   /**
    * Test 2: Verifies that assigning a head to a department correctly updates the department's head.
-   *
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -106,8 +134,8 @@ public class InternalIntegrationTest {
   }
 
   /**
-   * Test 3: Verifies that transferring an employee from one department to another updates the departments' employee lists.
-   *
+   * Test 3: Verifies that transferring an employee from one department to another
+   * updates the departments' employee lists.
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -121,8 +149,8 @@ public class InternalIntegrationTest {
   }
 
   /**
-   * Test 4: Verifies that removing an employee from a department updates the department's employee list.
-   *
+   * Test 4: Verifies that removing an employee from a department updates
+   * the department's employee list.
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -135,7 +163,6 @@ public class InternalIntegrationTest {
 
   /**
    * Test 5: Verifies that the department's employee count reflects the number of employees added.
-   *
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -148,7 +175,6 @@ public class InternalIntegrationTest {
 
   /**
    * Test 6: Verifies that department position statistics are calculated correctly.
-   *
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -166,7 +192,6 @@ public class InternalIntegrationTest {
 
   /**
    * Test 7: Verifies that department salary statistics are calculated correctly.
-   *
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -185,7 +210,6 @@ public class InternalIntegrationTest {
 
   /**
    * Test 8: Verifies that department performance statistics are calculated correctly.
-   *
    * Classes integrated: `Employee`, `Department`
    */
   @Test
@@ -203,7 +227,6 @@ public class InternalIntegrationTest {
 
   /**
    * Test 9: Verifies that the organization contains the added departments.
-   *
    * Classes integrated: `Organization`, `Department`
    */
   @Test
@@ -216,7 +239,6 @@ public class InternalIntegrationTest {
 
   /**
    * Test 10: Verifies that the organization can be converted to JSON correctly.
-   *
    * Classes integrated: `Organization`
    */
   @Test
@@ -228,8 +250,8 @@ public class InternalIntegrationTest {
   }
 
   /**
-   * Test 11: Verifies that adding an employee through `HrDatabaseFacade` correctly delegates to `DatabaseConnection`.
-   *
+   * Test 11: Verifies that adding an employee through `HrDatabaseFacade` correctly delegates
+   * to `DatabaseConnection`.
    * Classes integrated: `HrDatabaseFacade`, `DatabaseConnection`, `Employee`, `Department`
    */
   @Test
@@ -242,20 +264,24 @@ public class InternalIntegrationTest {
     when(mockDbConnection.addEmployeeToDepartment(
         eq(testOrganizationId),
         eq(testOrganizationId * 10000 + departmentId),
-        any(Employee.class)
-    )).thenReturn(internalEmpId);
+        any(Employee.class)))
+        .thenReturn(internalEmpId);
 
     Employee addedEmployee = new Employee(3, "New Employee", new Date());
-    List<Employee> updatedEmployees = new ArrayList<>(Arrays.asList(employee1, employee2, addedEmployee));
-    when(mockDbConnection.getEmployees(testOrganizationId)).thenReturn(updatedEmployees);
+    List<Employee> updatedEmployees = new ArrayList<>(
+        Arrays.asList(employee1, employee2, addedEmployee)
+    );
+    when(mockDbConnection.getEmployees(testOrganizationId))
+        .thenReturn(updatedEmployees);
 
     Employee result = facade.addEmployeeToDepartment(departmentId, newEmployee);
 
-    verify(mockDbConnection, times(1)).addEmployeeToDepartment(
-        eq(testOrganizationId),
-        eq(testOrganizationId * 10000 + departmentId),
-        eq(newEmployee)
-    );
+    verify(mockDbConnection, times(1))
+        .addEmployeeToDepartment(
+            eq(testOrganizationId),
+            eq(testOrganizationId * 10000 + departmentId),
+            eq(newEmployee)
+        );
 
     assertNotNull(result);
     assertEquals(3, result.getId());
@@ -263,8 +289,8 @@ public class InternalIntegrationTest {
   }
 
   /**
-   * Test 12: Verifies that getting the organization from `HrDatabaseFacade` returns the correct organization.
-   *
+   * Test 12: Verifies that getting the organization from `HrDatabaseFacade` returns
+   * the correct organization.
    * Classes integrated: `HrDatabaseFacade`, `Organization`
    */
   @Test
@@ -278,8 +304,8 @@ public class InternalIntegrationTest {
   }
 
   /**
-   * Test 13: Verifies that updating an employee through `HrDatabaseFacade` correctly delegates to `DatabaseConnection`.
-   *
+   * Test 13: Verifies that updating an employee through `HrDatabaseFacade` correctly delegates
+   * to `DatabaseConnection`.
    * Classes integrated: `HrDatabaseFacade`, `DatabaseConnection`, `Employee`
    */
   @Test
@@ -289,19 +315,21 @@ public class InternalIntegrationTest {
     updatedEmployee.setPosition("Senior Engineer");
     updatedEmployee.setSalary(80000);
 
-    when(mockDbConnection.updateEmployee(testOrganizationId, updatedEmployee)).thenReturn(true);
+    when(mockDbConnection.updateEmployee(testOrganizationId, updatedEmployee))
+        .thenReturn(true);
 
     boolean result = facade.updateEmployee(updatedEmployee);
 
-    verify(mockDbConnection, times(1)).updateEmployee(testOrganizationId, updatedEmployee);
+    verify(mockDbConnection, times(1))
+        .updateEmployee(testOrganizationId, updatedEmployee);
 
     assertTrue(result);
   }
 
   /**
-   * Test 14: Verifies that getting an employee from `HrDatabaseFacade` retrieves the correct employee.
-   *
-   * Classes integrated: `HrDatabaseFacade`, `Employee`
+   * Test 14: Verifies that getting an employee from `HrDatabaseFacade`
+   * retrieves the correct employee.
+   * lasses integrated: `HrDatabaseFacade`, `Employee`
    */
   @Test
   @Order(14)
@@ -313,8 +341,8 @@ public class InternalIntegrationTest {
   }
 
   /**
-   * Test 15: Verifies that getting a department from `HrDatabaseFacade` retrieves the correct department.
-   *
+   * Test 15: Verifies that getting a department from `HrDatabaseFacade`
+   * retrieves the correct department.
    * Classes integrated: `HrDatabaseFacade`, `Department`
    */
   @Test
@@ -325,5 +353,4 @@ public class InternalIntegrationTest {
     assertNotNull(result);
     assertEquals(department1.getName(), result.getName());
   }
-
 }
