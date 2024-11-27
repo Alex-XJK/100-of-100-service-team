@@ -33,8 +33,8 @@ import org.springframework.test.web.servlet.MvcResult;
 @AutoConfigureMockMvc
 public class RealRouteControllerTest {
 
-  private static final String base64_1 = "MQ";
-  private static final String apikey_1 = "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY";
+  private static final String base64_1 = "Mg"; // Organization ID 2
+  private static final String apikey_1 = "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo";
   private static final String base64_9999 = "OTk5OQ";
   private static final String apikey_9999 = "LWXYJwyiohgSJfgDkxOnNeX-bD2sVIr511qM_8NvYs-ai9g";
 
@@ -80,7 +80,7 @@ public class RealRouteControllerTest {
         .andReturn();
 
     JSONObject response = parseResponse(result);
-    Assertions.assertEquals(1, response.getInt("id"));
+    Assertions.assertEquals(2, response.getInt("id"));
     JSONArray departmentsId = response.getJSONArray("departments_id");
     Assertions.assertTrue(departmentsId.length() > 0);
     JSONArray departments = response.getJSONArray("departments");
