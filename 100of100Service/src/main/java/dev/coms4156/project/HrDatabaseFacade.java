@@ -18,7 +18,7 @@ public final class HrDatabaseFacade {
   private static DatabaseConnection dbConnection = null;
 
   private final int organizationId;
-  private List<Employee> employees;
+  List<Employee> employees;
   List<Department> departments;
   private Organization organization;
 
