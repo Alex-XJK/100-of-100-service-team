@@ -23,7 +23,7 @@ public final class MysqlConnection implements DatabaseConnection {
     return "MysqlConnection::us-east-1.rds.amazonaws.com";
   }
 
-  private MysqlConnection() {
+  MysqlConnection() {
     try {
       String url = System.getProperty(
           "db.url",
