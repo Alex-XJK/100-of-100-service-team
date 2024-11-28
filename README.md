@@ -324,8 +324,9 @@ To run the API tests on the local computer, follow the steps below:
 4. Drag the PostmanTests.json file to the box to create the test suite in Postman
 5. Click "run" on the upper-right corner to run the test suite.
 
-We also run the same API tests confirming proper returning of HTTP status codes
-and content types in RealRouteControllerTest, which are ran during Continuous Integration as well.
+We also run the API test suite confirming proper returning of HTTP status codes
+and content types in RealRouteControllerTest and RouteControllerTest,
+which are ran during Continuous Integration as well.
 
 
 
