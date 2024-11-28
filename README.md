@@ -311,7 +311,24 @@ These tests focus on how the HR system interacts with external resources, specif
 
 ## API Tests Documentation
 
-We use Postman to perform API tests.
+We run our system level / API tests using Postman. In our tests, we verify:
+
+1. All endpoints work properly and the endpoints return status code as expected.
+2. Multiple clients can access the endpoints concurrently and the service can tell them apart.
+
+To run the API tests on the local computer, follow the steps below:
+
+1. Download the latest version of Postman
+2. Download the PostmanTests.json file under /postman
+3. Open Postman. Then click import on the upper-left corner.
+4. Drag the PostmanTests.json file to the box to create the test suite in Postman
+5. Click "run" on the upper-right corner to run the test suite.
+
+We also run the same API tests confirming proper returning of HTTP status codes
+and content types in RealRouteControllerTest, which are ran during Continuous Integration as well.
+
+
+
 
 ## [Developer] Development Notice
 
