@@ -4,7 +4,9 @@
 [![codecov](https://codecov.io/github/Alex-XJK/100-of-100-service-team/graph/badge.svg?token=10CkTdL5TU)](https://codecov.io/github/Alex-XJK/100-of-100-service-team)
 
 GitHub repository for service of the Team Project associated with COMS 4156 Advanced Software Engineering.
-Our team name is 100-of-100 and our members are: Yifei Luo, Phoebe Wang, Jiakai Xu and Xintong Yu.
+Our team name is 100-of-100 and our members are: Sophie Yifei Luo, Phoebe Kerui Wang, Alex Jiakai Xu and Tony Xintong Yu.
+
+Please use the following link to view the repository relevant to the app: [100-of-100-client](https://github.com/phoebeww/100-of-100-client-team).
 
 ## [User] Endpoints Documentation
 
@@ -239,11 +241,12 @@ Our team name is 100-of-100 and our members are: Yifei Luo, Phoebe Wang, Jiakai 
       "status": "success",
       "message": "Organization AdvSE created",
       "token": "****",
-      "apikey": "****"
+      "apikey": "************"
    }
    ```
 - **Upon Success**:
    - HTTP 201 Status Code is returned with a success message.
+      - Please note that your unique `apikey` are sensitive information and will only be shown once upon registration.
 - **Upon Failure**:
    - HTTP 400 Status Code is returned if the organization name is invalid.
    - HTTP 500 Status Code is returned if any unexpected error occurs.
@@ -261,32 +264,13 @@ Our team name is 100-of-100 and our members are: Yifei Luo, Phoebe Wang, Jiakai 
    - HTTP 404 Status Code is returned with "Department or Employee Not Found" in the response body.
    - HTTP 500 Status Code is returned with "An unexpected error has occurred" in the response body.
 
-## [Ops] Deployment instructions
-
-### Building and Running a Local Instance
-In order to build and use the service of the project, you must install the following:
-
-1. [Maven 3.9.5](https://maven.apache.org/download.cgi) Download and follow the installation instructions. Set the bin as a new path variable for both Windows and MacOS.
-2. [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) used for development.
-3. [IntelliJ IDE](https://www.jetbrains.com/idea/download/?section=windows) Or use other IDE of your preference.
-
-In order to build the project, run under `./100of100Service` directory:
-```bash
-mvn -B package --file pom.xml
-```
-Or:
-```bash
-mvn clean install
-```
-To run the application, please use:
-```bash
-mvn spring-boot:run
-```
-
 ## [Developer] Development Notice
 
 ### Service Design
 At the beginning of the development of our services, we first carried out a careful design, in which we focus on the adoption of the following design patterns to decompose the modules, making it easier to extend and maintain the code in the future.
+
+Here's a reference UML diagram of our service to show the overall architecture and design patterns we've mentioned below. Note that this is not a class diagram generated entirely from code, this is just our service's architecture design, so the method signatures and attributes may not be accurate.
+![Architecture Diagram](./architecture.png)
 
 #### Command Pattern
 Instead of directly calling the service methods from the Springboot routes, we use the command pattern to encapsulate the detailed service logic into command objects. This way, we satisfy the Single Responsibility Principle, the route handler only needs to focus on the request and response, and the command object is responsible for implementing the different service logic (Freeman 208).
@@ -306,20 +290,56 @@ Given the inherent complexity that comes with databases, to ensure the Law of De
 #### Chain of Responsibility Pattern
 To streamline request processing and separate concerns across different stages, we utilize the Chain of Responsibility pattern in our middleware layer. This approach allows us to create a chain of middleware components, each with a unique responsibility, that sequentially handle incoming requests. For instance, our first middleware logs every incoming request and outgoing response, fulfilling logging and monitoring needs. The second middleware decodes the cid parameter, so our core service logic remains isolated from specific decoding algorithms. By following the Chain of Responsibility pattern, we ensure that each middleware component can independently address its task, and new functionality can be added or modified easily without affecting existing logic (Freeman 623).
 
-
-### Running Cloud Service
-
-To reach our service using cloud computing, please follow the steps below:
-1. When running tests in Postman point them to: https://coms-4156-team-project.ue.r.appspot.com/
-2. If the home/index page displays "Welcome, in order to make an API call direct your browser or Postman to an endpoint," then the service is operational and connection is successful.
-3. Test the endpoints by passing the endpoint name and parameters via Postman or some other tools. For example: https://coms-4156-team-project.ue.r.appspot.com/getEmpInfo?cid=MQ&eid=2
-
 ### Running Test Suite
 Our unit tests are located under directory `src/test`. After setting up and building the project, run
 ```bash
 mvn test
 ```
 You may also run the tests by right click any class in src/test directory and run to see the results if you are using IntelliJ IDEA as IDE.
+
+### Integration Testing Strategy
+
+We categorize the integration testing for our service into two main types:
+
+1. **Internal Integration Tests**: Verify interactions between core application classes.
+2. **External Integration Tests**: Verify interactions with external resources, like the real MySQL database.
+
+Each test method includes detailed documentation on the integration points in its docstring.
+
+
+#### Internal Integration Tests
+
+These tests focus on the interactions between core classes such as `Employee`, `Department`, `Organization`, `HrDatabaseFacade`, and `DatabaseConnection`.
+
+- **Class Interactions**: Ensure methods involving multiple classes function correctly.
+- **Mocking**: Use mock objects for `DatabaseConnection` to isolate tests from external dependencies.
+- **Singleton Management**: Manage singleton instances to ensure test isolation.
+
+
+#### External Integration Tests
+These tests focus on how the HR system interacts with external resources, specifically the MySQL database.
+
+- **Data Interaction and Verification**: Ensure CRUD operations are successful and the data stays persistently in the database.
+- **Transactional Testing**: Use transactions to maintain database integrity during tests.
+
+### API Tests Documentation
+
+We run our system level / API tests using Postman. In our tests, we verify:
+
+1. All endpoints work properly and the endpoints return status code as expected.
+2. Multiple clients can access the endpoints concurrently and the service can tell them apart.
+
+To run the API tests on the local computer, follow the steps below:
+
+1. Download the latest version of Postman
+2. Download the PostmanTests.json file under /postman
+3. Open Postman. Then click import on the upper-left corner.
+4. Drag the PostmanTests.json file to the box to create the test suite in Postman
+5. Click "run" on the upper-right corner to run the test suite.
+
+We also run the API test suite confirming proper returning of HTTP status codes
+and content types in RealRouteControllerTest and RouteControllerTest,
+which are ran during Continuous Integration as well.
 
 ### Style Checking Report
 In order to make sure the code is following the style guide, we use Maven Checkstyle plugin. To run the checkstyle report, run the following command:
@@ -369,7 +389,36 @@ Currently, the branch coverage is at 86% for the service.
 ![Branch Coverage](./coverage.png)
 
 ### Tool Used
-Maven, JUnit, JaCoCo, Maven Checkstyle, AWS RDS, DataGrip
+Maven, JUnit, JaCoCo, Maven Checkstyle, PMD, Codecov GitHub Action, AWS RDS, IntelliJ IDEA, DataGrip.
+
+## [Ops] Deployment instructions
+
+### Building and Running a Local Instance
+In order to build and use the service of the project, you must install the following:
+
+1. [Maven 3.9.5](https://maven.apache.org/download.cgi) Download and follow the installation instructions. Set the bin as a new path variable for both Windows and MacOS.
+2. [JDK 17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) used for development.
+3. [IntelliJ IDE](https://www.jetbrains.com/idea/download/?section=windows) Or use other IDE of your preference.
+
+In order to build the project, run under `./100of100Service` directory:
+```bash
+mvn -B package --file pom.xml
+```
+Or:
+```bash
+mvn clean install
+```
+To run the application, please use:
+```bash
+mvn spring-boot:run
+```
+
+### Running Cloud Service
+
+To reach our service using cloud computing, please follow the steps below:
+1. When running tests in Postman point them to: https://coms-4156-team-project.ue.r.appspot.com/
+2. If the home/index page displays "Welcome, in order to make an API call direct your browser or Postman to an endpoint," then the service is operational and connection is successful.
+3. Test the endpoints by passing the endpoint name and parameters via Postman or some other tools. For example: https://coms-4156-team-project.ue.r.appspot.com/getEmpInfo?cid=MQ&eid=2
 
 ## [Team] Teamwork and Collaboration
 
@@ -380,14 +429,15 @@ In the GitHub Projects, we use Kanban board to manage our tasks. We have columns
 ### PR Review Process
 We enforce the PR review process to ensure the quality of the code.
 All changes in the main branch must be made through a pull request. The pull request must be reviewed by at least one team member and make sure all the discussions are resolved before merging.
+Also, all the CIs described above must be passed, which include but are not limited to Maven Build to ensure that the code is free of compilation and dependency issues; CodeQL to ensure that the code is of static quality; Maven Test to ensure that newly added changes do not affect the expected performance; and Codecov to ensure that coverage does not fall below a threshold and fluctuates only within a given range.
 
 ### Division of Work
 Although the GitHub Projects documents all the tasks done or led by each team member, as per the assignment requirements, we also briefly summarize the general division of work here (please refer to the GitHub Projects for more details):
 
-- **Yifei Luo**: Responsible for the database design, implementation, and its deployment.
-- **Phoebe Wang**: Responsible for the API design, service implementation, testing, and external documentation.
-- **Jiakai Xu**: Responsible for the initial project setup, overall architecture design and implementation, and the internal documentation.
-- **Xintong Yu**: Responsible for the interface integration between service and database.
+- **Yifei Luo**: Responsible for the service's database design, implementation, and its deployment. Also lead the architecture and development of the client-side application.
+- **Phoebe Wang**: Responsible for the service's API design, service implementation, testing, and external documentation. Also lead the integration of the service with the client-side application.
+- **Jiakai Xu**: Responsible for the initial project and CIs setup, overall architecture design and implementation, continuous development, code quality management, and the internal documentation.
+- **Xintong Yu**: Responsible for the interface integration between service and database, the service implementation, testing, and the deployment of the service.
 
 (names are in alphabetical order)
 
