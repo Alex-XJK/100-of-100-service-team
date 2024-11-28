@@ -284,6 +284,35 @@ To run the application, please use:
 mvn spring-boot:run
 ```
 
+## Integration Testing Strategy
+
+We categorize the integration testing for our service into two main types:
+
+1. **Internal Integration Tests**: Verify interactions between core application classes.
+2. **External Integration Tests**: Verify interactions with external resources, like the real MySQL database.
+
+Each test method includes detailed documentation on the integration points in its docstring.
+
+
+### Internal Integration Tests
+
+These tests focus on the interactions between core classes such as `Employee`, `Department`, `Organization`, `HrDatabaseFacade`, and `DatabaseConnection`.
+
+- **Class Interactions**: Ensure methods involving multiple classes function correctly.
+- **Mocking**: Use mock objects for `DatabaseConnection` to isolate tests from external dependencies.
+- **Singleton Management**: Manage singleton instances to ensure test isolation.
+
+
+### External Integration Tests
+These tests focus on how the HR system interacts with external resources, specifically the MySQL database.
+
+- **Data Interaction and Verification**: Ensure CRUD operations are successful and the data stays persistently in the database.
+- **Transactional Testing**: Use transactions to maintain database integrity during tests.
+
+## API Tests Documentation
+
+We use Postman to perform API tests.
+
 ## [Developer] Development Notice
 
 ### Service Design
