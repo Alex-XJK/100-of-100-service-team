@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/github/Alex-XJK/100-of-100-service-team/graph/badge.svg?token=10CkTdL5TU)](https://codecov.io/github/Alex-XJK/100-of-100-service-team)
 
 GitHub repository for service of the Team Project associated with COMS 4156 Advanced Software Engineering.
-Our team name is 100-of-100 and our members are: Yifei Luo, Phoebe Wang, Jiakai Xu and Xintong Yu.
+Our team name is 100-of-100 and our members are: Sophie Yifei Luo, Phoebe Kerui Wang, Alex Jiakai Xu and Tony Xintong Yu.
 
 ## [User] Endpoints Documentation
 
@@ -239,11 +239,12 @@ Our team name is 100-of-100 and our members are: Yifei Luo, Phoebe Wang, Jiakai 
       "status": "success",
       "message": "Organization AdvSE created",
       "token": "****",
-      "apikey": "****"
+      "apikey": "************"
    }
    ```
 - **Upon Success**:
    - HTTP 201 Status Code is returned with a success message.
+      - Please note that your unique `apikey` are sensitive information and will only be shown once upon registration.
 - **Upon Failure**:
    - HTTP 400 Status Code is returned if the organization name is invalid.
    - HTTP 500 Status Code is returned if any unexpected error occurs.
@@ -287,6 +288,9 @@ mvn spring-boot:run
 
 ### Service Design
 At the beginning of the development of our services, we first carried out a careful design, in which we focus on the adoption of the following design patterns to decompose the modules, making it easier to extend and maintain the code in the future.
+
+Here's a reference UML diagram of our service to show the overall architecture and design patterns we've mentioned below. Note that this is not a class diagram generated entirely from code, this is just our service's architecture design, so the method signatures and attributes may not be accurate.
+![Architecture Diagram](./architecture.png)
 
 #### Command Pattern
 Instead of directly calling the service methods from the Springboot routes, we use the command pattern to encapsulate the detailed service logic into command objects. This way, we satisfy the Single Responsibility Principle, the route handler only needs to focus on the request and response, and the command object is responsible for implementing the different service logic (Freeman 208).
@@ -369,7 +373,7 @@ Currently, the branch coverage is at 86% for the service.
 ![Branch Coverage](./coverage.png)
 
 ### Tool Used
-Maven, JUnit, JaCoCo, Maven Checkstyle, AWS RDS, DataGrip
+Maven, JUnit, JaCoCo, Maven Checkstyle, PMD, Codecov GitHub Action, AWS RDS, IntelliJ IDEA, DataGrip.
 
 ## [Team] Teamwork and Collaboration
 
@@ -380,14 +384,15 @@ In the GitHub Projects, we use Kanban board to manage our tasks. We have columns
 ### PR Review Process
 We enforce the PR review process to ensure the quality of the code.
 All changes in the main branch must be made through a pull request. The pull request must be reviewed by at least one team member and make sure all the discussions are resolved before merging.
+Also, all the CIs described above must be passed, which include but are not limited to Maven Build to ensure that the code is free of compilation and dependency issues; CodeQL to ensure that the code is of static quality; Maven Test to ensure that newly added changes do not affect the expected performance; and Codecov to ensure that coverage does not fall below a threshold and fluctuates only within a given range.
 
 ### Division of Work
 Although the GitHub Projects documents all the tasks done or led by each team member, as per the assignment requirements, we also briefly summarize the general division of work here (please refer to the GitHub Projects for more details):
 
-- **Yifei Luo**: Responsible for the database design, implementation, and its deployment.
-- **Phoebe Wang**: Responsible for the API design, service implementation, testing, and external documentation.
-- **Jiakai Xu**: Responsible for the initial project setup, overall architecture design and implementation, and the internal documentation.
-- **Xintong Yu**: Responsible for the interface integration between service and database.
+- **Yifei Luo**: Responsible for the service's database design, implementation, and its deployment. Also lead the architecture and development of the client-side application.
+- **Phoebe Wang**: Responsible for the service's API design, service implementation, testing, and external documentation. Also lead the integration of the service with the client-side application.
+- **Jiakai Xu**: Responsible for the initial project and CIs setup, overall architecture design and implementation, continuous development, code quality management, and the internal documentation.
+- **Xintong Yu**: Responsible for the interface integration between service and database, the service implementation, testing, and the deployment of the service.
 
 (names are in alphabetical order)
 
