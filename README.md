@@ -284,6 +284,53 @@ To run the application, please use:
 mvn spring-boot:run
 ```
 
+## Integration Testing Strategy
+
+We categorize the integration testing for our service into two main types:
+
+1. **Internal Integration Tests**: Verify interactions between core application classes.
+2. **External Integration Tests**: Verify interactions with external resources, like the real MySQL database.
+
+Each test method includes detailed documentation on the integration points in its docstring.
+
+
+### Internal Integration Tests
+
+These tests focus on the interactions between core classes such as `Employee`, `Department`, `Organization`, `HrDatabaseFacade`, and `DatabaseConnection`.
+
+- **Class Interactions**: Ensure methods involving multiple classes function correctly.
+- **Mocking**: Use mock objects for `DatabaseConnection` to isolate tests from external dependencies.
+- **Singleton Management**: Manage singleton instances to ensure test isolation.
+
+
+### External Integration Tests
+These tests focus on how the HR system interacts with external resources, specifically the MySQL database.
+
+- **Data Interaction and Verification**: Ensure CRUD operations are successful and the data stays persistently in the database.
+- **Transactional Testing**: Use transactions to maintain database integrity during tests.
+
+## API Tests Documentation
+
+We run our system level / API tests using Postman. In our tests, we verify:
+
+1. All endpoints work properly and the endpoints return status code as expected.
+2. Multiple clients can access the endpoints concurrently and the service can tell them apart.
+
+To run the API tests on the local computer, follow the steps below:
+
+1. Download the latest version of Postman
+2. Download the PostmanTests.json file under /postman
+3. Open Postman. Then click import on the upper-left corner.
+4. Drag the PostmanTests.json file to the box to create the test suite in Postman
+5. Click "run" on the upper-right corner to run the test suite.
+
+We also run the API test suite confirming proper returning of HTTP status codes
+and content types in RealRouteControllerTest and RouteControllerTest,
+which are ran during Continuous Integration as well.
+
+
+
+
 ## [Developer] Development Notice
 
 ### Service Design

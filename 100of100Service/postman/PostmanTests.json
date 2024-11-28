@@ -1,0 +1,613 @@
+{
+  "info": {
+    "name": "HR API Test Suite",
+    "_postman_id": "abcd1234-5678-90ab-cdef-1234567890ab",
+    "description": "Postman collection for testing HR API endpoints, including multiple clients and persistent data aspects.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Client 1 - Add Employee to Department",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "name", "value": "Alice", "type": "text" },
+            { "key": "hireDate", "value": "2022-06-28", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/addEmpToDept?cid=MQ&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["addEmpToDept"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Add Employee to Department",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "name", "value": "Bob", "type": "text" },
+            { "key": "hireDate", "value": "2023-01-15", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/addEmpToDept?cid=Mg&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["addEmpToDept"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Get Employee Info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/getEmpInfo?cid=MQ&eid=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["getEmpInfo"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "eid", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Get Employee Info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/getEmpInfo?cid=Mg&eid=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["getEmpInfo"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "eid", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Get Department Info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/getDeptInfo?cid=MQ&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["getDeptInfo"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Get Department Info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/getDeptInfo?cid=Mg&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["getDeptInfo"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Set Employee Position",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "position", "value": "Manager", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/setEmpPos?cid=MQ&eid=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["setEmpPos"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "eid", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Set Employee Position",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "position", "value": "Engineer", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/setEmpPos?cid=Mg&eid=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["setEmpPos"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "eid", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Set Employee Salary",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "salary", "value": "8000.00", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/setEmpSalary?cid=MQ&eid=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["setEmpSalary"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "eid", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Set Employee Salary",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            { "key": "salary", "value": "7000.00", "type": "text" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:8080/setEmpSalary?cid=Mg&eid=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["setEmpSalary"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "eid", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Get Department Budget Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/statDeptBudget?cid=MQ&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["statDeptBudget"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Get Department Budget Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/statDeptBudget?cid=Mg&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["statDeptBudget"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Get Department Performance Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/statDeptPerf?cid=MQ&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["statDeptPerf"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Get Department Performance Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/statDeptPerf?cid=Mg&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["statDeptPerf"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Get Department Position Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/statDeptPos?cid=MQ&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["statDeptPos"],
+          "query": [
+            { "key": "cid", "value": "MQ" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Get Department Position Statistics",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/statDeptPos?cid=Mg&did=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["statDeptPos"],
+          "query": [
+            { "key": "cid", "value": "Mg" },
+            { "key": "did", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 1 - Get Organization Info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYFtOBd1dVudC3c1qq-DSJhjWR518GLghZkzB5gXclIuY",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/getOrgInfo?cid=MQ",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["getOrgInfo"],
+          "query": [{ "key": "cid", "value": "MQ" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Client 2 - Get Organization Info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "LWXYHABozUSjY9J-bJoeNi0dnzinfPIRLSlHe_pOyK2BFxo",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:8080/getOrgInfo?cid=Mg",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["getOrgInfo"],
+          "query": [{ "key": "cid", "value": "Mg" }]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": []
+}
